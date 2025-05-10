@@ -10,7 +10,7 @@
 		<ProjectReference Include="..\OrderService.Application\OrderService.Application.csproj" />
 		<ProjectReference Include="..\OrderService.Domain\OrderService.Domain.csproj" />
 		<ProjectReference Include="..\OrderService.Infra\OrderService.Infra.csproj" />
-		<ProjectReference Include="..\Shared\Shared.csproj" />
+		<ProjectReference Include="..\Shared\SharedSvc.csproj" />
 	
 		
 	</ItemGroup>

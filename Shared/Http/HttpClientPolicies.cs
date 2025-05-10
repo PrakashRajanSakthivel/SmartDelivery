@@ -2,6 +2,7 @@
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderService.Application.Common;
 using Polly;
 using Polly.Extensions.Http;
 using Shared.CorrelationId;

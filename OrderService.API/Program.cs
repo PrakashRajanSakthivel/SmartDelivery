@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
@@ -31,6 +32,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapDevTokenGenerator(builder.Configuration); // Optional
+    //app.MapGet("/", [ApiExplorerSettings(IgnoreApi = true)] () => Results.Redirect("/swagger/index.html"));
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/")
+        {
+            context.Response.Redirect("/swagger/index.html");
+            return;
+        }
+        await next();
+    });
 }
 
 app.UseHttpsRedirection();
