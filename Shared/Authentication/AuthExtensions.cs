@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace shared.Authentication
+namespace Shared.Authentication
 {
     // shared/Authentication/AuthExtensions.cs
     public static class AuthExtensions
@@ -11,7 +14,7 @@ namespace shared.Authentication
         {
             var key = Encoding.UTF8.GetBytes(config["Jwt:SecretKey"]!);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            object value = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters

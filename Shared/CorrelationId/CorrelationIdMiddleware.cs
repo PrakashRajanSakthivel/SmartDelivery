@@ -1,4 +1,8 @@
-﻿namespace shared.CorrelationId
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+namespace Shared.CorrelationId
 {
     public class CorrelationIdMiddleware
     {

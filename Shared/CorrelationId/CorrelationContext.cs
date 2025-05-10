@@ -1,4 +1,6 @@
-﻿namespace shared.CorrelationId
+﻿using System.Threading;
+
+namespace Shared.CorrelationId
 {
     public static class CorrelationContext
     {

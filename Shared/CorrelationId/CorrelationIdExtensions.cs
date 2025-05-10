@@ -1,4 +1,7 @@
-﻿namespace shared.CorrelationId
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Shared.CorrelationId
 {
     public static class CorrelationIdExtensions
     {

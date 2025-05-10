@@ -1,9 +1,12 @@
-﻿using OrderService.Application.Common;
-using shared.CorrelationId;
-using Polly.Extensions.Http;
+﻿using System;
+using System.Net.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using Polly.Extensions.Http;
+using Shared.CorrelationId;
 
-namespace shared.Http
+namespace Shared.Http
 {
     // shared/Http/HttpClientPolicies.cs
     public static class HttpClientPolicies
@@ -12,13 +15,13 @@ namespace shared.Http
         {
             services.AddTransient<CorrelationIdDelegatingHandler>();
 
-            services.AddHttpClient<IRestaurentService, RestaurentService>(client =>
-            {
-                client.BaseAddress = new Uri("https://paymentservice.local");
-            })
-            .AddHttpMessageHandler<CorrelationIdDelegatingHandler>()
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy());
+            //services.AddHttpClient<IRestaurentService, RestaurentService>(client =>
+            //{
+            //    client.BaseAddress = new Uri("https://paymentservice.local");
+            //})
+            //.AddHttpMessageHandler<CorrelationIdDelegatingHandler>()
+            //.AddPolicyHandler(GetRetryPolicy())
+            //.AddPolicyHandler(GetCircuitBreakerPolicy());
 
             return services;
         }

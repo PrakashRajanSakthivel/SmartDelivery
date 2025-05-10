@@ -1,7 +1,7 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
 
-namespace shared.CorrelationId
+namespace Shared.CorrelationId
 {
     public class CorrelationIdEnricher : ILogEventEnricher
     {

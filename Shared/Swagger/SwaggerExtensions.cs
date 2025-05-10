@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace shared.Swagger
+
+
+namespace Shared.Swagger
 {
     public static class SwaggerExtensions
     {

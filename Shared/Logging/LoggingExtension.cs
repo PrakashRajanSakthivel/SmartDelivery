@@ -1,7 +1,11 @@
-﻿using shared.CorrelationId;
+﻿using Shared.CorrelationId;
 using Serilog;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace shared.Logging
+namespace Shared.Logging
 {
     // shared/Logging/LoggingExtensions.cs
     public static class LoggingExtensions
