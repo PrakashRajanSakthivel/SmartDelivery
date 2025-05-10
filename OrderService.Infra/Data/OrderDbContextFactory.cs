@@ -17,7 +17,7 @@ namespace OrderService.Infra.Data
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<OrderDbContext>();
-            var connectionString = configuration.GetConnectionString("OrderDbConnection");
+            var connectionString = configuration.GetConnectionString("OrderDatabase");
 
             optionsBuilder.UseSqlServer(connectionString);
 
