@@ -13,6 +13,16 @@ namespace OrderService.Domain.Entites
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+        public bool IsCancelled { get; set; } = false;
+        public DateTime? CancelledAt { get; set; }
+        public string? CancellationReason { get; set; }
+
+        public bool IsRefunded { get; set; } = false;
+        public DateTime? RefundedAt { get; set; }
+        public string? RefundReason { get; set; }
+
+        public string? Notes { get; set; }
+
         // Navigation property
         public ICollection<OrderItem>? OrderItems { get; set; }
         public ICollection<OrderStatusHistory>? StatusHistories { get; set; }

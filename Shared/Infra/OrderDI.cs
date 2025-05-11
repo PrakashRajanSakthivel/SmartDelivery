@@ -6,6 +6,8 @@ using OrderService.Infra.Repository;
 using OrderService.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using OrderService.Application.Services;
+using OrderService.Application.Common;
+using OrderService.Application.Orders.Handlers;
 
 
 
@@ -20,7 +22,13 @@ public static class ServiceCollectionExtensions
             services.AddDbContext<OrderDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("OrderDatabase")));
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(UpdateOrderStatusCommandHandler).Assembly);
+                cfg.Lifetime = ServiceLifetime.Scoped;
+            });
             services.AddScoped<IOrderService, OrderService.Application.Services.OrderService>(); // Fully qualify the OrderService class to avoid namespace conflict
 
             // Add more services/repositories here later
