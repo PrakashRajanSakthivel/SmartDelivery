@@ -31,7 +31,7 @@ namespace OrderService.Application.Services
                 OrderItems = request.Items.Select(item => new OrderItem
                 {
                     OrderItemId = Guid.NewGuid(),
-                    ProductId = item.ProductId,
+                    MenuItemId = item.ProductId,
                     Quantity = item.Quantity,
                     UnitPrice = item.Price
                 }).ToList()

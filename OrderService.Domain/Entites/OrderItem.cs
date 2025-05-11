@@ -12,7 +12,6 @@
 
         // Navigation property
         public Order? Order { get; set; }
-        public Guid ProductId { get; set; }
     }
 
 }

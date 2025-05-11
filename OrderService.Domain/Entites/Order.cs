@@ -7,6 +7,7 @@ namespace OrderService.Domain.Entites
         public Guid OrderId { get; set; }
         public Guid UserId { get; set; }
         public Guid RestaurantId { get; set; }
+
         public OrderStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime CreatedAt { get; set; }
