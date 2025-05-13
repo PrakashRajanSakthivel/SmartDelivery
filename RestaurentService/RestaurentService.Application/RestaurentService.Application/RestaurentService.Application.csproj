@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared.Data\Shared.Data.csproj" />
+    <ProjectReference Include="..\..\RestaurentService.Domain\RestaurentService.Domain\RestaurentService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

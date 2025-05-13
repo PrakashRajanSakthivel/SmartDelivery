@@ -23,6 +23,7 @@ namespace RestaurentService.Domain.Entites
 
         public ICollection<MenuItem> MenuItems { get; set; } = [];
         public ICollection<Category> Categories { get; set; } = [];
+        public string PhoneNumber { get; set; }
     }
 
 }
