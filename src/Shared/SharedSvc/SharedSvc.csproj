@@ -7,6 +7,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="MediatR" Version="12.5.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
 	  <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
@@ -29,12 +30,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\OrderService.Application\OrderService.Application.csproj" />
-	  <ProjectReference Include="..\OrderService.Domain\OrderService.Domain.csproj" />
-	  <ProjectReference Include="..\OrderService.Infra\OrderService.Infra.csproj" />
-	  <ProjectReference Include="..\RestaurentService\RestaurentService.Application\RestaurentService.Application\RestaurentService.Application.csproj" />
-	  <ProjectReference Include="..\RestaurentService\RestaurentService.Domain\RestaurentService.Domain\RestaurentService.Domain.csproj" />
-	  <ProjectReference Include="..\RestaurentService\RestaurentService.Infra\RestaurentService.Infra\RestaurentService.Infra.csproj" />
+	  <ProjectReference Include="..\..\services\OrderService\OrderService.Application\OrderService.Application.csproj" />
+	  <ProjectReference Include="..\..\services\OrderService\OrderService.Domain\OrderService.Domain.csproj" />
+	  <ProjectReference Include="..\..\services\OrderService\OrderService.Infra\OrderService.Infra.csproj" />
+	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Application\RestaurantService.Application.csproj" />
+	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Domain\RestaurantService.Domain.csproj" />
+	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Infra\RestaurantService.Infra.csproj" />
 	  <ProjectReference Include="..\Shared.Data\Shared.Data.csproj" />
 	</ItemGroup>
 	

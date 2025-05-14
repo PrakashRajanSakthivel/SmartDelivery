@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RestaurentService.Domain.Entites;
 
+
 namespace RestaurentService.Infra.Configuration
 {
     public class RestaurentConfiguration : IEntityTypeConfiguration<Restaurant>

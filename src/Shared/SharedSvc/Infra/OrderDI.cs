@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using OrderService.Application.Services;
 using OrderService.Application.Common;
 using OrderService.Application.Orders.Handlers;
+using MediatR;
 
 
 

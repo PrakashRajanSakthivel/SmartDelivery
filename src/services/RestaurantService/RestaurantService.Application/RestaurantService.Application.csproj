@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared.Data\Shared.Data.csproj" />
-    <ProjectReference Include="..\..\RestaurentService.Domain\RestaurentService.Domain\RestaurentService.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.Data\Shared.Data.csproj" />
+    <ProjectReference Include="..\RestaurantService.Domain\RestaurantService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using RestaurentService.Domain.Entites;
 using RestaurentService.Domain.Interfaces;
 using RestaurentService.Infra.Data;
-using Shared.Data.Interfaces;
 using Shared.Data.Repositories;
 
 namespace RestaurentService.Infra.Repository
