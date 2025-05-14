@@ -140,6 +140,7 @@ namespace RestaurentService.Infra.Data
                         AverageRating = 4.5,
                         DeliveryFee = 2.99m,
                         MinOrderAmount = 10.00m,
+                        PhoneNumber = "123-456-7890",
                         EstimatedDeliveryTime = 30
                     }
                 );

@@ -13,8 +13,8 @@ using OrderService.Application.Orders.Handlers;
 
 namespace Shared.Infra
 {
-   
-public static class ServiceCollectionExtensions
+
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddOrderServiceInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
@@ -36,6 +36,6 @@ public static class ServiceCollectionExtensions
             return services;
         }
     }
-    }
+}
 
 

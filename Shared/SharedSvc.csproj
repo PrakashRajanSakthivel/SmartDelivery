@@ -32,6 +32,10 @@
 	  <ProjectReference Include="..\OrderService.Application\OrderService.Application.csproj" />
 	  <ProjectReference Include="..\OrderService.Domain\OrderService.Domain.csproj" />
 	  <ProjectReference Include="..\OrderService.Infra\OrderService.Infra.csproj" />
+	  <ProjectReference Include="..\RestaurentService\RestaurentService.Application\RestaurentService.Application\RestaurentService.Application.csproj" />
+	  <ProjectReference Include="..\RestaurentService\RestaurentService.Domain\RestaurentService.Domain\RestaurentService.Domain.csproj" />
+	  <ProjectReference Include="..\RestaurentService\RestaurentService.Infra\RestaurentService.Infra\RestaurentService.Infra.csproj" />
+	  <ProjectReference Include="..\Shared.Data\Shared.Data.csproj" />
 	</ItemGroup>
 	
 </Project>
