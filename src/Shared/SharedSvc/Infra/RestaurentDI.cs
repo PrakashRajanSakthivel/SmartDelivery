@@ -25,7 +25,7 @@ namespace SharedSvc.Infra
 
             //services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Register services
-            services.AddScoped<IRestaurantService , RestaurantService>();
+            services.AddScoped<IRestaurantService, RestaurentService.Application.Services.RestaurantService>();
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
             services.AddMediatR(cfg =>
             {

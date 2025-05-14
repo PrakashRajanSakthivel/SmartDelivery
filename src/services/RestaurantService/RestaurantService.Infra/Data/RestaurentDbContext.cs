@@ -132,7 +132,7 @@ namespace RestaurentService.Infra.Data
                 modelBuilder.Entity<Restaurant>().HasData(
                     new Restaurant
                     {
-                        Id = Guid.NewGuid(),
+                        Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                         Name = "Burger Palace",
                         Description = "Home of the best burgers in town",
                         IsActive = true,
