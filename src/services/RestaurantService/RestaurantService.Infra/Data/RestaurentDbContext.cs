@@ -17,6 +17,7 @@ namespace RestaurentService.Infra.Data
         public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -111,7 +112,7 @@ namespace RestaurentService.Infra.Data
                 entity.HasOne(m => m.Restaurant)
                     .WithMany(r => r.MenuItems)
                     .HasForeignKey(m => m.RestaurantId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.ClientCascade);
 
                 entity.HasOne(m => m.Category)
                     .WithMany(c => c.MenuItems)
@@ -126,25 +127,6 @@ namespace RestaurentService.Infra.Data
                 entity.HasIndex(m => m.IsAvailable);
             });
 
-            // Seed initial data if needed
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-            {
-                modelBuilder.Entity<Restaurant>().HasData(
-                    new Restaurant
-                    {
-                        Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
-                        Name = "Burger Palace",
-                        Description = "Home of the best burgers in town",
-                        IsActive = true,
-                        CreatedAt = DateTime.UtcNow,
-                        AverageRating = 4.5,
-                        DeliveryFee = 2.99m,
-                        MinOrderAmount = 10.00m,
-                        PhoneNumber = "123-456-7890",
-                        EstimatedDeliveryTime = 30
-                    }
-                );
-            }
         }
     }
 }

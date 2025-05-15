@@ -20,7 +20,7 @@ namespace RestaurentService.Infra.Data
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<RestaurantDbContext>();
-            var connectionString = configuration.GetConnectionString("RestaurentDatabase");
+            var connectionString = configuration.GetConnectionString("RestaurantDatabase");
 
             optionsBuilder.UseSqlServer(connectionString);
 

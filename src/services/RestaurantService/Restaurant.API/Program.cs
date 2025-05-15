@@ -1,3 +1,5 @@
+using RestaurantService.Infra.Data;
+using RestaurentService.Infra.Data;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
@@ -26,6 +28,13 @@ app.UseJwtAuth();
 
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var dbContext = services.GetRequiredService<RestaurantDbContext>();
+        SeedData.Initialize(dbContext);
+    }
+
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapDevTokenGenerator(builder.Configuration); // Optional
