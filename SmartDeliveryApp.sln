@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Domain", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Infra", "src\services\OrderService\OrderService.Infra\OrderService.Infra.csproj", "{246AAC52-BE86-4B47-8933-A1054D1A8454}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restaurant.API", "src\services\RestaurantService\Restaurant.API\Restaurant.API.csproj", "{0BEBB7C7-915C-4B64-AA26-6069040E3E99}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantService.API", "src\services\RestaurantService\Restaurant.API\RestaurantService.API.csproj", "{0BEBB7C7-915C-4B64-AA26-6069040E3E99}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantService.Application", "src\services\RestaurantService\RestaurantService.Application\RestaurantService.Application.csproj", "{3436A3E2-C463-424C-8327-4AB4ACDA906F}"
 EndProject
