@@ -24,6 +24,8 @@ namespace Shared.Infra
                 options.UseSqlServer(configuration.GetConnectionString("OrderDatabase")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IOrderUnitOfWork, OrderUnitOfWork>();
+
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddMediatR(cfg =>
             {

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderService.Domain.Interfaces;
+using OrderService.Infra.Data;
+using RestaurantService.Domain.Interfaces;
+using RestaurantService.Infra.Data;
 using RestaurentService.Application.Restaurents.Handlers;
 using RestaurentService.Application.Restaurents.Queries;
 using RestaurentService.Application.Services;
@@ -23,7 +27,8 @@ namespace SharedSvc.Infra
             services.AddDbContext<RestaurantDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("RestaurantDatabase")));
 
-            //services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IRestaurantUnitOfWork, RestaurantUnitOfWork>();
+
             // Register services
             services.AddScoped<IRestaurantService, RestaurentService.Application.Services.RestaurantService>();
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
