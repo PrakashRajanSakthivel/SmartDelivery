@@ -16,8 +16,8 @@ namespace Shared.Data.Interfaces
         Task AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);
 
-        void Update(T entity);
-        void UpdateRange(IEnumerable<T> entities);
+        Task UpdateAsync(T entity);
+        Task UpdateRangeAsync(IEnumerable<T> entities);
 
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);

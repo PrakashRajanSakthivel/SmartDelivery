@@ -25,12 +25,12 @@ namespace RestaurentService.Application.Restaurents.Handlers
             var restaurant = new Restaurant
             {
                 Id = Guid.NewGuid(),
-                Name = request.Name,
-                Description = request.Description,
-                Address = request.Address,
-                PhoneNumber = request.PhoneNumber,
-                DeliveryFee = request.DeliveryFee,
-                MinOrderAmount = request.MinOrderAmount,
+                Name = request.CreateRestaurantRequest.Name,
+                Description = request.CreateRestaurantRequest.Description,
+                Address = request.CreateRestaurantRequest.Address,
+                PhoneNumber = request.CreateRestaurantRequest.PhoneNumber,
+                DeliveryFee = request.CreateRestaurantRequest.DeliveryFee,
+                MinOrderAmount = request.CreateRestaurantRequest.MinOrderAmount,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };

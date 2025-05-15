@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurentService.Application.Restaurents.Commands;
+using RestaurentService.Application.Restaurents.Queries;
 using RestaurentService.Application.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Restaurent.API
 {
@@ -10,25 +13,25 @@ namespace Restaurent.API
     [Route("api/restaurants")]
     public class RestaurantsController : ControllerBase
     {
-        private readonly IRestaurantService _restaurantService;
+        private readonly IMediator _mediator;
 
-        public RestaurantsController(IRestaurantService restaurantService)
-        {
-            _restaurantService = restaurantService;
-        }
+        public RestaurantsController(IMediator mediator)
+        => _mediator = mediator;
 
         [HttpPost]
         public async Task<IActionResult> CreateRestaurant([FromBody] CreateRestaurantRequest request)
         {
-            var restaurantId = await _restaurantService.CreateRestaurantAsync(request);
+            var command = new CreateRestaurantCommand(request);
+            var restaurantId = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetRestaurant), new { id = restaurantId }, null);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRestaurant(Guid id)
         {
-            var restaurant = await _restaurantService.GetRestaurantAsync(id);
-            return Ok(restaurant);
+            var query = new GetRestaurantById(id);
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
     }
 }

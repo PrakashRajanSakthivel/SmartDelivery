@@ -12,17 +12,16 @@ namespace OrderService.Application.Common
             _httpClient = httpClient;
         }
 
-        public async Task<bool> ProcessPaymentAsync(string orderId, decimal amount)
+        public async Task<bool> IsPresent(Guid Id)
         {
             var payload = new
             {
-                OrderId = orderId,
-                Amount = amount
+                RestaurantId = Id
             };
 
             var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/api/payment/process", content);
+            var response = await _httpClient.PostAsync("/api/GetRestaurant/", content);
 
             return response.IsSuccessStatusCode;
         }

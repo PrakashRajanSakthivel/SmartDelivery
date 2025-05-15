@@ -8,11 +8,5 @@ using MediatR;
 namespace RestaurentService.Application.Restaurents.Commands
 {
     // RestaurantService.Application/Restaurants/Commands/CreateRestaurant/CreateRestaurantCommand.cs
-    public record CreateRestaurantCommand(
-        string Name,
-        string Description,
-        string Address,
-        string PhoneNumber,
-        decimal DeliveryFee,
-        decimal MinOrderAmount) : IRequest<Guid>;
+    public record CreateRestaurantCommand(CreateRestaurantRequest CreateRestaurantRequest) : IRequest<Guid>;
 }

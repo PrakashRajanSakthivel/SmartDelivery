@@ -11,7 +11,7 @@ namespace RestaurentService.Application.Services
     // RestaurantService.Application/Services/IRestaurantService.cs
     public interface IRestaurantService
     {
-        Task<Guid> CreateRestaurantAsync(CreateRestaurantRequest request);
-        Task<RestaurantDto> GetRestaurantAsync(Guid id);
+        //Task<Guid> CreateRestaurantAsync(CreateRestaurantRequest request);
+        //Task<RestaurantDto> GetRestaurantAsync(Guid id);
     }
 }

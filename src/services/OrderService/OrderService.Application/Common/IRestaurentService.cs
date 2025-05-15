@@ -2,6 +2,6 @@
 {
     public interface IRestaurentService
     {
-        Task<bool> ProcessPaymentAsync(string orderId, decimal amount);
+        Task<bool> IsPresent(Guid id);
     }
 }

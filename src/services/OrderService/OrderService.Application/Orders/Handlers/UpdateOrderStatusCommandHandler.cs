@@ -14,14 +14,13 @@ namespace OrderService.Application.Orders.Handlers
     public class UpdateOrderStatusCommandHandler : IRequestHandler<UpdateOrderStatusCommand, Unit>
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
         public UpdateOrderStatusCommandHandler(
-            IOrderRepository orderRepository,
-            IUnitOfWork unitOfWork)
+            IOrderRepository orderRepository
+            )
         {
             _orderRepository = orderRepository;
-            _unitOfWork = unitOfWork;
+
         }
 
         public async Task<Unit> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
@@ -48,8 +47,8 @@ namespace OrderService.Application.Orders.Handlers
                 Note = request.Note
             });
 
-            //await _orderRepository.UpdateAsync(order);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _orderRepository.UpdateAsync(order);
+            await _orderRepository.SaveChangesAsync();
 
             return Unit.Value;
         }

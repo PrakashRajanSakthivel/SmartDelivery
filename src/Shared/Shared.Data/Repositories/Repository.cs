@@ -29,9 +29,19 @@ namespace Shared.Data.Repositories
         public async Task AddRangeAsync(IEnumerable<T> entities)
             => await _dbSet.AddRangeAsync(entities);
 
-        public void Update(T entity) => _dbSet.Update(entity);
+        //public void UpdateAsync(T entity) => _dbSet.Update(entity);
 
-        public void UpdateRange(IEnumerable<T> entities) => _dbSet.UpdateRange(entities);
+        public async Task UpdateAsync(T entity)
+        {
+            _context.Set<T>().Update(entity);
+        }
+
+        public async Task UpdateRangeAsync(IEnumerable<T> entities)
+        {
+            _context.Set<T>().UpdateRange(entities);
+        }
+
+        //public void UpdateRangeAsync(IEnumerable<T> entities) => _dbSet.UpdateRange(entities);
 
         public void Remove(T entity) => _dbSet.Remove(entity);
 

@@ -30,15 +30,13 @@ namespace SharedSvc.Infra
             services.AddScoped<IRestaurantUnitOfWork, RestaurantUnitOfWork>();
 
             // Register services
-            services.AddScoped<IRestaurantService, RestaurentService.Application.Services.RestaurantService>();
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+            
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(CreateRestaurantHandler).Assembly);
                 cfg.Lifetime = ServiceLifetime.Scoped;
             });
-
-            services.AddScoped<GetRestaurantbyId>();
 
             // Add more services/repositories here later
 

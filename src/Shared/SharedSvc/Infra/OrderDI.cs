@@ -23,7 +23,7 @@ namespace Shared.Infra
             services.AddDbContext<OrderDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("OrderDatabase")));
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IRestaurentService, OrderService.Application.Common.RestaurentService>();
             services.AddScoped<IOrderUnitOfWork, OrderUnitOfWork>();
 
             services.AddScoped<IOrderRepository, OrderRepository>();

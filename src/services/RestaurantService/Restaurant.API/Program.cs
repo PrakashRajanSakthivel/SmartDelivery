@@ -1,3 +1,4 @@
+using RestaurantService.Application.Mapper;
 using RestaurantService.Infra.Data;
 using RestaurentService.Infra.Data;
 using Shared.Authentication;
@@ -19,6 +20,11 @@ builder.Services
     .AddHttpClients(builder.Configuration)
     .AddJwtAuth(builder.Configuration)
     .AddSwaggerSupport();
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+builder.Services.AddAutoMapper(typeof(RestaurantProfile));
 
 var app = builder.Build();
 

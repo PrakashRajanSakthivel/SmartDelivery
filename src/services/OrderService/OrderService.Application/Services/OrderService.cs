@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderService.Application.Common;
 using OrderService.Application.Model;
 using OrderService.Domain.Entites;
 using OrderService.Domain.Interfaces;
@@ -10,16 +11,24 @@ namespace OrderService.Application.Services
     {
         private readonly IOrderUnitOfWork _orderuow;
         private readonly ILogger<OrderService> _logger;
+        private readonly IRestaurentService _restaurentService;
 
-        public OrderService(IOrderUnitOfWork orderuow, ILogger<OrderService> logger)
+        public OrderService(IOrderUnitOfWork orderuow,  ILogger<OrderService> logger, IRestaurentService restaurentService)
         {
             _orderuow = orderuow;
             _logger = logger;
+            _restaurentService = restaurentService;
         }
 
         public async Task<Guid> CreateOrderAsync(CreateOrderRequest request)
         {
             _logger.LogInformation("Creating order for UserId: {UserId} at {Time}", request.UserId, DateTime.UtcNow);
+
+            if(!await _restaurentService.IsPresent(request.RestaurantId))
+            {
+                _logger.LogInformation("Restaurant {RestaurantId} is not present", request.RestaurantId);
+                throw new Exception("Restaurant not found");
+            }
 
             var order = new Order
             {
