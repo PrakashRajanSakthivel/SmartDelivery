@@ -1,13 +1,10 @@
 ﻿using OrderService.Domain.Entites;
+using Shared.Data.Interfaces;
 
 namespace OrderService.Domain.Interfaces
 {
-    public interface IOrderRepository
+    public interface IOrderRepository : IRepository<Order>
     {
-        Task<Order> GetByIdAsync(Guid orderId);
-        Task AddAsync(Order order);
-        Task UpdateAsync(Order order);
-        Task DeleteAsync(Order order);
-        Task SaveChangesAsync();
+
     }
 }

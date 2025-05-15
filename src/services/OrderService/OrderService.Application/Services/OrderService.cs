@@ -8,12 +8,12 @@ namespace OrderService.Application.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderUnitOfWork _orderuow;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IOrderRepository orderRepository, ILogger<OrderService> logger)
+        public OrderService(IOrderUnitOfWork orderuow, ILogger<OrderService> logger)
         {
-            _orderRepository = orderRepository;
+            _orderuow = orderuow;
             _logger = logger;
         }
 
@@ -37,8 +37,8 @@ namespace OrderService.Application.Services
                 }).ToList()
             };
 
-            await _orderRepository.AddAsync(order);
-            await _orderRepository.SaveChangesAsync();
+            await _orderuow.Orders.AddAsync(order);
+            await _orderuow.Orders.SaveChangesAsync();
             _logger.LogInformation("Order {OrderId} created successfully", order.OrderId);
             return order.OrderId;
         }
