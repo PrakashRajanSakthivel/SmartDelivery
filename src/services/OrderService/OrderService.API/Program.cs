@@ -21,6 +21,9 @@ builder.Services
     .AddJwtAuth(builder.Configuration)
     .AddSwaggerSupport();
 
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
 var app = builder.Build();
 
 app.UseMiddleware<CorrelationIdMiddleware>();

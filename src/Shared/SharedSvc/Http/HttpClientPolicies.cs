@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderService.Application.Common;
 using Polly;
@@ -16,13 +14,13 @@ namespace Shared.Http
         {
             services.AddTransient<CorrelationIdDelegatingHandler>();
 
-            //services.AddHttpClient<IRestaurentService, RestaurentService>(client =>
-            //{
-            //    client.BaseAddress = new Uri("https://paymentservice.local");
-            //})
-            //.AddHttpMessageHandler<CorrelationIdDelegatingHandler>()
-            //.AddPolicyHandler(GetRetryPolicy())
-            //.AddPolicyHandler(GetCircuitBreakerPolicy());
+            services.AddHttpClient<IRestaurentService, OrderService.Application.Common.RestaurentService>(client =>
+            {
+                client.BaseAddress = new Uri("https://paymentservice.local");
+            })
+            .AddHttpMessageHandler<CorrelationIdDelegatingHandler>()
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy());
 
             return services;
         }
