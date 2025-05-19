@@ -1,40 +1,5 @@
-# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-
-# Clear existing NuGet configurations
-RUN rm -rf /root/.nuget/NuGet/*
-
-# Create a new NuGet.Config with only the necessary source
-RUN mkdir -p /root/.nuget/NuGet && \
-    echo '<?xml version="1.0" encoding="utf-8"?> \
-    <configuration> \
-      <packageSources> \
-        <clear /> \
-        <add key="nuget.org" value="https://api.nuget.org/v3/index.json" /> \
-      </packageSources> \
-    </configuration>' > /root/.nuget/NuGet/NuGet.Config
-
-# Copy only solution and project files first
-COPY src/services/OrderService/OrderService.API/*.csproj ./services/OrderService/OrderService.API/
-COPY src/services/OrderService/OrderService.Application/*.csproj ./services/OrderService/OrderService.Application/
-COPY src/services/OrderService/OrderService.Domain/*.csproj ./services/OrderService/OrderService.Domain/
-COPY src/services/OrderService/OrderService.Infra/*.csproj ./services/OrderService/OrderService.Infra/
-COPY src/Shared/Shared.Data/*.csproj ./Shared/Shared.Data/
-COPY src/Shared/SharedSvc/*.csproj ./Shared/SharedSvc/
-
-# Restore packages using the config we created
-RUN dotnet restore ./services/OrderService/OrderService.API/OrderService.API.csproj
-
-# Copy remaining source code
-COPY src/. .
-
-# Publish
-WORKDIR /src/services/OrderService/OrderService.API
-RUN dotnet publish -c Release -o /app/publish --no-restore
-
-# Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# ./DockerFiles/OrderDockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/publish .
+COPY ./publish/OrderService/ .
 ENTRYPOINT ["dotnet", "OrderService.API.dll"]
