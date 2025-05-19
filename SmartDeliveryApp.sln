@@ -37,6 +37,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Test", "Unit Test", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService.Infra.Test", "OrderService.Infra.Test\OrderService.Infra.Test.csproj", "{1135F5A1-9D66-49CD-AAC9-89D418554BCA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerFiles", "DockerFiles", "{2EA58F1A-09F1-4AFF-9503-E27224FB47D9}"
+	ProjectSection(SolutionItems) = preProject
+		src\Dockerfiles\OrderDockerfile = src\Dockerfiles\OrderDockerfile
+		src\Dockerfiles\RestaurantDockerfile = src\Dockerfiles\RestaurantDockerfile
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +114,7 @@ Global
 		{80AF6C5B-0E72-46C5-A3E0-AA35ED7C2AA7} = {06037C70-2B82-47E6-98C2-4F42DF47CA6F}
 		{C851EE7E-AF5B-4E36-9682-CB558F00BA00} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{1135F5A1-9D66-49CD-AAC9-89D418554BCA} = {C851EE7E-AF5B-4E36-9682-CB558F00BA00}
+		{2EA58F1A-09F1-4AFF-9503-E27224FB47D9} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05B03117-8F96-426D-BCF4-5219BD5922C5}
