@@ -1,0 +1,29 @@
+# General .NET ignores
+**/[Bb]in/
+**/[Oo]bj/
+**/.vs/
+**/.vscode/
+**/node_modules/
+**/.dockerignore
+**/.git/
+**/.gitignore
+
+# Build outputs
+**/*.[Pp]ublish
+**/*.nupkg
+
+# Config files
+**/*.csproj.user
+**/*.user
+**/*.userprefs
+**/launchSettings.json
+**/appsettings.Development.json
+
+# Ignore everything except what's needed for build
+!src/services/OrderService/**
+!src/Shared/Shared.Data/**
+!src/Shared/SharedSvc/**
+
+# OS files
+**/.DS_Store
+**/Thumbs.db

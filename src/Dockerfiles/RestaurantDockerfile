@@ -1,0 +1,27 @@
+﻿# ------------------------------------------
+# 🔧 Build Stage
+# ------------------------------------------
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+
+# 📁 Copy full source tree with folder structure
+COPY src/ ./src/
+
+# 📍 Go to project directory
+WORKDIR /app/src/services/OrderService/OrderService.API
+
+# 🔁 Restore packages
+RUN dotnet restore --configfile /app/NuGet.config
+
+# 🚀 Publish
+RUN dotnet publish -c Release -o /out --no-restore
+
+# ------------------------------------------
+# 🚀 Runtime Stage
+# ------------------------------------------
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+
+COPY --from=build /out ./
+ENTRYPOINT ["dotnet", "OrderService.API.dll"]
