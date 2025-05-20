@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
@@ -11,27 +12,36 @@ using Shared.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddControllers();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
 
-builder.Services
-    .AddEndpointsApiExplorer()
-    .AddOrderServiceInfrastructure(builder.Configuration)
-    .AddHttpClients(builder.Configuration)
-    .AddJwtAuth(builder.Configuration)
-    .AddSwaggerSupport();
+try
+{
+    Log.Information("Starting up the Order Service");
+    builder.Host.UseSerilog();
 
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+    builder.Services
+        .AddControllers();
 
-var app = builder.Build();
+    builder.Services
+        .AddEndpointsApiExplorer()
+        .AddOrderServiceInfrastructure(builder.Configuration)
+        .AddHttpClients(builder.Configuration)
+        .AddJwtAuth(builder.Configuration)
+        .AddSwaggerSupport();
 
-app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseDefaultLogging(builder.Configuration);
-app.UseJwtAuth();
+    builder.Services.AddMediatR(cfg =>
+        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-//if (app.Environment.IsDevelopment())
-//{
+    var app = builder.Build();
+
+    app.UseMiddleware<CorrelationIdMiddleware>();
+    app.UseDefaultLogging(builder.Configuration);
+    app.UseJwtAuth();
+
+    //if (app.Environment.IsDevelopment())
+    //{
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapDevTokenGenerator(builder.Configuration); // Optional
@@ -45,8 +55,17 @@ app.UseJwtAuth();
         }
         await next();
     });
-//}
+    //}
 
-app.UseHttpsRedirection();
-app.MapControllers();
-app.Run();
+    app.UseHttpsRedirection();
+    app.MapControllers();
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
