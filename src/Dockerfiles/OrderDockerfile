@@ -3,3 +3,19 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY ./publish/OrderService/ .
 ENTRYPOINT ["dotnet", "OrderService.API.dll"]
+
+# ./DockerFiles/OrderDockerfile
+# FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# WORKDIR /app
+# 
+# # Copy only the necessary files
+# COPY ./publish/OrderService/OrderService.API.* ./
+# COPY ./publish/OrderService/OrderService.Application.* ./
+# COPY ./publish/OrderService/OrderService.Domain.* ./
+# COPY ./publish/OrderService/OrderService.Infra.* ./
+# COPY ./publish/OrderService/OrderService.Infra.* ./
+# COPY ./publish/OrderService/OrderService.Infra.* ./
+# COPY ./publish/OrderService/*.runtimeconfig.json ./
+# COPY ./publish/OrderService/*.deps.json ./
+# 
+# ENTRYPOINT ["dotnet", "OrderService.API.dll"]

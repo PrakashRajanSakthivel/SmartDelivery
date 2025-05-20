@@ -30,8 +30,8 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseDefaultLogging(builder.Configuration);
 app.UseJwtAuth();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapDevTokenGenerator(builder.Configuration); // Optional
@@ -45,7 +45,7 @@ if (app.Environment.IsDevelopment())
         }
         await next();
     });
-}
+//}
 
 app.UseHttpsRedirection();
 app.MapControllers();

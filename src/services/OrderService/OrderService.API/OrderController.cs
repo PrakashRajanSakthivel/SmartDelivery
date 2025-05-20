@@ -13,10 +13,12 @@ namespace OrderService.API
     public class OrderController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(IMediator mediator)
+        public OrderController(IMediator mediator, ILogger<OrderController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -40,6 +42,9 @@ namespace OrderService.API
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
+            _logger.LogInformation("Fetching order with ID: {OrderId}", id);
+            _logger.LogDebug("Fetching order with ID: {OrderId}", id);
+            _logger.LogWarning("Fetching order with ID: {OrderId}", id);
             var query = new GetOrderById(id);
             var result = await _mediator.Send(query);
             return Ok(result);
