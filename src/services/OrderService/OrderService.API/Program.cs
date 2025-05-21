@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Events;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
@@ -15,8 +17,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
 
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .Build();
+
+var elasticUri = configuration["Elasticsearch:Uri"];
+
 Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
+     .Enrich.FromLogContext()
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
+    {
+        AutoRegisterTemplate = true,
+        IndexFormat = "orderservice-logs-{0:yyyy.MM.dd}",
+        CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
+        EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
+                           EmitEventFailureHandling.RaiseCallback |
+                           EmitEventFailureHandling.ThrowException
+    })
     .CreateLogger();
 
 try
