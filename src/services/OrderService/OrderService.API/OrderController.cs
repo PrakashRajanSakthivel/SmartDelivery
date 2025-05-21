@@ -59,6 +59,30 @@ namespace OrderService.API
             await _mediator.Send(command);
             return NoContent();
         }
-    }
 
+        [HttpGet("logging-test")]
+        public IActionResult LoggingTest()
+        {
+            _logger.LogInformation("Test information message");
+            _logger.LogWarning("Test warning message");
+            _logger.LogError("Test error message");
+
+            try
+            {
+                throw new Exception("This is a test exception");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Test exception with stack trace");
+            }
+
+            return Ok(new
+            {
+                Message = "Test logs generated",
+                Timestamp = DateTime.UtcNow
+            });
+        }
+    }
 }
+
+

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Serilog.Events;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
@@ -11,6 +12,8 @@ using Shared.Swagger;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -35,6 +38,19 @@ try
         cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
     var app = builder.Build();
+
+    app.UseSerilogRequestLogging(options =>
+    {
+        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+        {
+            diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+            diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+        };
+        options.GetLevel = (ctx, elapsed, ex) =>
+            ex != null ? LogEventLevel.Error :
+            ctx.Response.StatusCode > 499 ? LogEventLevel.Error :
+            LogEventLevel.Information;
+    });
 
     app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseDefaultLogging(builder.Configuration);
