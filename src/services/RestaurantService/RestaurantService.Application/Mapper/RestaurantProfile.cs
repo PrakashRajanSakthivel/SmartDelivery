@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using RestaurantService.Application.Restaurents.Queries;
 using RestaurentService.Application.Restaurents.Queries;
 using RestaurentService.Domain.Entites;
 
@@ -15,6 +16,7 @@ namespace RestaurantService.Application.Mapper
         public RestaurantProfile()
         {
             CreateMap<Restaurant, RestaurantDto>();
+            CreateMap<Restaurant, RestaurantDetailsDto>();
             // Add other custom mappings if needed
         }
     }

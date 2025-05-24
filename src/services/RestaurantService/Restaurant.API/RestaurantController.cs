@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantService.Application.Restaurents.Queries;
 using RestaurentService.Application.Restaurents.Commands;
 using RestaurentService.Application.Restaurents.Queries;
 using RestaurentService.Application.Services;
@@ -30,6 +31,22 @@ namespace Restaurent.API
         public async Task<IActionResult> GetRestaurant(Guid id)
         {
             var query = new GetRestaurantById(id);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllRestaurants()
+        {
+            var query = new GetAllRestaurantsQuery(); // Returns basic info only
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}/details")]
+        public async Task<IActionResult> GetRestaurantDetails(Guid id)
+        {
+            var query = new GetRestaurantDetailsQuery(id);
             var result = await _mediator.Send(query);
             return Ok(result);
         }
