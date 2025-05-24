@@ -13,6 +13,7 @@ namespace RestaurentService.Application.Restaurents.Handlers
     // RestaurantService.Application/Restaurants/Commands/CreateRestaurant/CreateRestaurantHandler.cs
     public class CreateRestaurantHandler : IRequestHandler<CreateRestaurantCommand, Guid>
     {
+
         private readonly IRestaurantRepository _restaurantRepository;
 
         public CreateRestaurantHandler(IRestaurantRepository restaurantRepository)
@@ -20,8 +21,9 @@ namespace RestaurentService.Application.Restaurents.Handlers
             _restaurantRepository = restaurantRepository;
         }
 
-        public async Task<Guid> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateRestaurantCommand request, CancellationToken ct)
         {
+            // 1. Create Restaurant
             var restaurant = new Restaurant
             {
                 Id = Guid.NewGuid(),
@@ -31,11 +33,37 @@ namespace RestaurentService.Application.Restaurents.Handlers
                 PhoneNumber = request.CreateRestaurantRequest.PhoneNumber,
                 DeliveryFee = request.CreateRestaurantRequest.DeliveryFee,
                 MinOrderAmount = request.CreateRestaurantRequest.MinOrderAmount,
-                IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _restaurantRepository.AddAsync(restaurant);
+            // 2. Add Categories
+            var categories = request.CreateRestaurantRequest.Categories
+                .Select(c => new Category
+                {
+                    Id = Guid.NewGuid(),
+                    RestaurantId = restaurant.Id,
+                    Name = c.Name,
+                    DisplayOrder = c.DisplayOrder
+                }).ToList();
+
+            // 3. Add Menu Items
+            var menuItems = request.CreateRestaurantRequest.MenuItems
+                .Select(m => new MenuItem
+                {
+                    Id = Guid.NewGuid(),
+                    RestaurantId = restaurant.Id,
+                    CategoryId = m.CategoryId,
+                    Name = m.Name,
+                    Description = m.Description,
+                    Price = m.Price,
+                    IsVegetarian = m.IsVegetarian,
+                    IsVegan = m.IsVegan,
+                    PreparationTime = m.PreparationTime,
+                    CreatedAt = DateTime.UtcNow
+                }).ToList();
+
+            // 4. Persist all together
+            await _restaurantRepository.AddRestaurantWithMenuAsync(restaurant, categories, menuItems);
             await _restaurantRepository.SaveChangesAsync();
 
             return restaurant.Id;

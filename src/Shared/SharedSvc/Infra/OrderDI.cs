@@ -28,7 +28,7 @@ namespace Shared.Infra
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(UpdateOrderStatusCommandHandler).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(UpdateOrderStatusHandler).Assembly);
                 cfg.Lifetime = ServiceLifetime.Scoped;
             });
 

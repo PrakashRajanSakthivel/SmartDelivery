@@ -23,9 +23,16 @@ namespace OrderService.Domain.Entites
 
         public string? Notes { get; set; }
 
+        //public uint Version { get; private set; }  // Numeric version (simpler than ETag)
+        //public string ETag => Convert.ToBase64String(BitConverter.GetBytes(Version));
+
+        //// Method to increment version
+        //public void IncrementVersion() => Version++;
+
         // Navigation property
         public ICollection<OrderItem>? OrderItems { get; set; }
         public ICollection<OrderStatusHistory>? StatusHistories { get; set; }
+        public DateTime DeliveredAt { get; set; }
     }
 
 }

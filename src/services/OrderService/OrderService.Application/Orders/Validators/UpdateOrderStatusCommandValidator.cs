@@ -14,7 +14,6 @@ namespace OrderService.Application.Orders.Validators
         {
             RuleFor(x => x.OrderId).NotEmpty();
             RuleFor(x => x.NewStatus).IsInEnum();
-            RuleFor(x => x.ChangedBy).NotEmpty();
         }
     }
 

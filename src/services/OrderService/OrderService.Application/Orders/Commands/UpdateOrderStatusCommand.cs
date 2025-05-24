@@ -8,11 +8,11 @@ using OrderService.Domain.Entites;
 
 namespace OrderService.Application.Orders.Commands
 {
-    public class UpdateOrderStatusCommand : IRequest<Unit>
+    public sealed record UpdateOrderStatusCommand(
+        Guid OrderId,
+        OrderStatus NewStatus,
+        string? Reason = null) : IRequest<bool>
     {
-        public Guid OrderId { get; set; }
-        public OrderStatus NewStatus { get; set; }
-        public string ChangedBy { get; set; } = "system"; // or "user", "restaurant", etc.
-        public string? Note { get; set; }
+        public object ChangedBy { get; internal set; }
     }
 }

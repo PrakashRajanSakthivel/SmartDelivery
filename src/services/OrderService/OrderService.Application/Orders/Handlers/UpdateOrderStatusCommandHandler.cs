@@ -4,60 +4,107 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using OrderService.Application.Common;
 using OrderService.Application.Orders.Commands;
 using OrderService.Domain.Entites;
 using OrderService.Domain.Interfaces;
+using OrderService.Infra.Repository;
 
 namespace OrderService.Application.Orders.Handlers
 {
-    public class UpdateOrderStatusCommandHandler : IRequestHandler<UpdateOrderStatusCommand, Unit>
+    // UpdateOrderStatusHandler.cs
+    public class UpdateOrderStatusHandler : IRequestHandler<UpdateOrderStatusCommand, bool>
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly ILogger<UpdateOrderStatusHandler> _logger;
 
-        public UpdateOrderStatusCommandHandler(
-            IOrderRepository orderRepository
-            )
+        public UpdateOrderStatusHandler(IOrderRepository repository, ILogger<UpdateOrderStatusHandler> logger)
         {
-            _orderRepository = orderRepository;
-
+            _orderRepository = repository;
+            _logger = logger;
         }
 
-        public async Task<Unit> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
         {
             var order = await _orderRepository.GetByIdAsync(request.OrderId);
-            if (order is null)
-                throw new KeyNotFoundException($"Order with ID {request.OrderId.ToString()} not found.");
+            if (order == null)
+            {
+                _logger.LogWarning("Order {OrderId} not found", request.OrderId);
+                return false;
+            }
 
-            // Business rule: Only allow legal transitions (optional)
-            if (!IsValidStatusChange(order.Status, request.NewStatus))
-                throw new ApplicationException($"Invalid status change from {order.Status} to {request.NewStatus}");
+            // Validate status transition
+            if (!IsValidTransition(order.Status, request.NewStatus))
+            {
+                _logger.LogWarning("Invalid status transition from {CurrentStatus} to {NewStatus}",
+                    order.Status, request.NewStatus);
+                return false;
+            }
 
+            // Update status
             order.Status = request.NewStatus;
             order.UpdatedAt = DateTime.UtcNow;
 
-            order.StatusHistories ??= new List<OrderStatusHistory>();
-            order.StatusHistories.Add(new OrderStatusHistory
+            // Handle special cases
+            switch (request.NewStatus)
             {
-                Id = Guid.NewGuid(),
-                OrderId = order.OrderId,
-                Status = request.NewStatus,
-                ChangedAt = DateTime.UtcNow,
-                ChangedBy = request.ChangedBy,
-                Note = request.Note
-            });
+                case OrderStatus.Cancelled:
+                    order.CancelledAt = DateTime.UtcNow;
+                    order.CancellationReason = request.Reason;
+                    break;
+
+                case OrderStatus.Delivered:
+                    order.DeliveredAt = DateTime.UtcNow;
+                    break;
+            }
 
             await _orderRepository.UpdateAsync(order);
             await _orderRepository.SaveChangesAsync();
+            _logger.LogInformation("Order {OrderId} status updated to {Status}",
+                order.OrderId, order.Status);
 
-            return Unit.Value;
+            return true;
         }
 
-
-        private bool IsValidStatusChange(OrderStatus current, OrderStatus next)
+        private bool IsValidTransition(OrderStatus current, OrderStatus next)
         {
-            // Optional: Add logic here to prevent illegal transitions
-            return true;
+            var allowedTransitions = new Dictionary<OrderStatus, List<OrderStatus>>
+            {
+                [OrderStatus.Created] = new()
+        {
+            OrderStatus.Paid,
+            OrderStatus.Cancelled
+        },
+                [OrderStatus.Paid] = new()
+        {
+            OrderStatus.Preparing,
+            OrderStatus.Cancelled,
+            OrderStatus.Refunded  // Added refund option
+        },
+                [OrderStatus.Preparing] = new()
+        {
+            OrderStatus.ReadyForDelivery,
+            OrderStatus.Cancelled  // Can cancel during preparation
+        },
+                [OrderStatus.ReadyForDelivery] = new()
+        {
+            OrderStatus.OutForDelivery,
+            OrderStatus.Cancelled  // Rare but possible before dispatch
+        },
+                [OrderStatus.OutForDelivery] = new()
+        {
+            OrderStatus.Delivered,
+            OrderStatus.Returned  // For failed deliveries
+        },
+                [OrderStatus.Delivered] = new()
+        {
+            OrderStatus.Refunded  // Post-delivery refunds
+        }
+            };
+
+            return allowedTransitions.TryGetValue(current, out var validNext)
+                   && validNext.Contains(next);
         }
     }
 

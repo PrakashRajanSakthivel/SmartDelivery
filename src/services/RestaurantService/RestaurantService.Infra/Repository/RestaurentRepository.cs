@@ -47,5 +47,18 @@ namespace RestaurentService.Infra.Repository
                 .Take(count)
                 .ToListAsync();
         }
+
+        public async Task AddRestaurantWithMenuAsync(
+    Restaurant restaurant,
+    List<Category> categories,
+    List<MenuItem> menuItems)
+        {
+            // EF Core tracks all changes in single UoW
+            await _context.Restaurants.AddAsync(restaurant);
+            await _context.Categories.AddRangeAsync(categories);
+            await _context.MenuItems.AddRangeAsync(menuItems);
+
+            // SaveChangesAsync() will commit all as one transaction
+        }
     }
 }

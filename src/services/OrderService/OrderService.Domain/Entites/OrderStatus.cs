@@ -8,7 +8,12 @@
         Ready,
         Completed,
         Cancelled,
-        Created
+        Created,
+        Delivered,
+        Refunded,
+        ReadyForDelivery,
+        OutForDelivery,
+        Returned
     }
 
 }
