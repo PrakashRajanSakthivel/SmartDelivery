@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PaymentService.Application.Payment.Commands;
+using PaymentService.Application.Payment.DTO;
 
 namespace PaymentService.API
 {
@@ -15,17 +17,19 @@ namespace PaymentService.API
         [HttpPost("intents")]
         public async Task<IActionResult> CreateIntent([FromBody] CreatePaymentIntentRequest request)
         {
-            return Ok();
+            var command = new CreatePaymentIntentCommand(request);
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
         [HttpPost("confirm")]
         public async Task<IActionResult> Confirm([FromBody] ConfirmPaymentRequest request)
         {
+            var command = new ConfirmPaymentCommand(request);
+            var result = await _mediator.Send(command);
             return Ok();
         }
     }
 
-    // Request DTOs
-    public record CreatePaymentIntentRequest(decimal Amount, string Currency = "usd");
-    public record ConfirmPaymentRequest(string PaymentIntentId);
+
 }

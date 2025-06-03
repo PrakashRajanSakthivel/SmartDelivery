@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Payment\Commands\" />
     <Folder Include="Payment\CommandHandlers\" />
     <Folder Include="Payment\QueryHandler\" />
     <Folder Include="Payment\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 
 </Project>
