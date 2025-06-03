@@ -43,6 +43,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DockerFiles", "DockerFiles"
 		src\Dockerfiles\RestaurantDockerfile = src\Dockerfiles\RestaurantDockerfile
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PaymentService", "PaymentService", "{66256518-8007-405D-BBEB-F09F90F578C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.API", "src\services\PaymentService\PaymentService.API\PaymentService.API.csproj", "{B0CB0BAB-F1AF-8717-269A-CE892E468AAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Application", "src\services\PaymentService\PaymentService.Application\PaymentService.Application.csproj", "{DE2C65B8-4F10-943F-93C3-D6970F02D0C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Domain", "src\services\PaymentService\PaymentService.Domain\PaymentService.Domain.csproj", "{6A1F07AE-2B01-B59F-B85B-749C81421BCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +101,18 @@ Global
 		{1135F5A1-9D66-49CD-AAC9-89D418554BCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1135F5A1-9D66-49CD-AAC9-89D418554BCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1135F5A1-9D66-49CD-AAC9-89D418554BCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0CB0BAB-F1AF-8717-269A-CE892E468AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0CB0BAB-F1AF-8717-269A-CE892E468AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0CB0BAB-F1AF-8717-269A-CE892E468AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0CB0BAB-F1AF-8717-269A-CE892E468AAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE2C65B8-4F10-943F-93C3-D6970F02D0C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE2C65B8-4F10-943F-93C3-D6970F02D0C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE2C65B8-4F10-943F-93C3-D6970F02D0C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE2C65B8-4F10-943F-93C3-D6970F02D0C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A1F07AE-2B01-B59F-B85B-749C81421BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A1F07AE-2B01-B59F-B85B-749C81421BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A1F07AE-2B01-B59F-B85B-749C81421BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A1F07AE-2B01-B59F-B85B-749C81421BCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +135,10 @@ Global
 		{C851EE7E-AF5B-4E36-9682-CB558F00BA00} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{1135F5A1-9D66-49CD-AAC9-89D418554BCA} = {C851EE7E-AF5B-4E36-9682-CB558F00BA00}
 		{2EA58F1A-09F1-4AFF-9503-E27224FB47D9} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{66256518-8007-405D-BBEB-F09F90F578C2} = {A0907C74-5FFE-4D88-AF70-4746ABCB5C83}
+		{B0CB0BAB-F1AF-8717-269A-CE892E468AAF} = {66256518-8007-405D-BBEB-F09F90F578C2}
+		{DE2C65B8-4F10-943F-93C3-D6970F02D0C7} = {66256518-8007-405D-BBEB-F09F90F578C2}
+		{6A1F07AE-2B01-B59F-B85B-749C81421BCC} = {66256518-8007-405D-BBEB-F09F90F578C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05B03117-8F96-426D-BCF4-5219BD5922C5}
