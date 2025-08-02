@@ -7,32 +7,33 @@ using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
 using Shared.Http;
-using Shared.Infra;
+using SharedSvc.Infra;
 using Shared.Logging;
 using Shared.Swagger;
+using SharedSvc.Infra.Order;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
+    builder.Logging.ClearProviders();
 
-var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddEnvironmentVariables()
-    .Build();
+    var configuration = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .AddEnvironmentVariables()
+        .Build();
 
-var elasticUri = configuration["Elasticsearch:Uri"];
+    var elasticUri = configuration["Elasticsearch:Uri"];
 
-Log.Logger = new LoggerConfiguration()
-     .Enrich.FromLogContext()
-    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
-    {
-        AutoRegisterTemplate = true,
-        IndexFormat = "orderservice-logs-{0:yyyy.MM.dd}",
-        CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
-        EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
-                           EmitEventFailureHandling.RaiseCallback |
+    Log.Logger = new LoggerConfiguration()
+         .Enrich.FromLogContext()
+        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
+        {
+            AutoRegisterTemplate = true,
+            IndexFormat = "orderservice-logs-{0:yyyy.MM.dd}",
+            CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
+            EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
+                               EmitEventFailureHandling.RaiseCallback |
                            EmitEventFailureHandling.ThrowException
     })
     .CreateLogger();

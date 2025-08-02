@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.5.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.15" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="MediatR"  />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi"  />
+    <PackageReference Include="Swashbuckle.AspNetCore"  />
   </ItemGroup>
 
   <ItemGroup>

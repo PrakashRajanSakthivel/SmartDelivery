@@ -11,7 +11,7 @@ using MediatR;
 
 
 
-namespace Shared.Infra
+namespace SharedSvc.Infra.Order
 {
 
     public static class ServiceCollectionExtensions

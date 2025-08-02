@@ -17,7 +17,7 @@ using RestaurentService.Domain.Interfaces;
 using RestaurentService.Infra.Data;
 using RestaurentService.Infra.Repository;
 
-namespace SharedSvc.Infra
+namespace SharedSvc.Infra.Restaurant
 {
     public static class ServiceCollectionExtensions
     {

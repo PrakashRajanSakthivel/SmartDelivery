@@ -7,7 +7,7 @@ using Shared.DevTools;
 using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
-using SharedSvc.Infra;
+using SharedSvc.Infra.Restaurant;
 
 var builder = WebApplication.CreateBuilder(args);
 
