@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\SharedSvc\SharedSvc.csproj" />
     <ProjectReference Include="..\..\src\Shared\SharedSvc\SharedSvc.csproj" />
     <ProjectReference Include="..\CartService.Application\CartService.Application.csproj" />
     <ProjectReference Include="..\CartService.Domain\CartService.Domain.csproj" />
@@ -15,21 +16,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR"  />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi"  />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" >
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" >
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Serilog"  />
-    <PackageReference Include="Serilog.AspNetCore"  />
-    <PackageReference Include="Serilog.Extensions.Hosting"  />
-    <PackageReference Include="Serilog.Sinks.Elasticsearch"  />
-    <PackageReference Include="Swashbuckle.AspNetCore"  />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Extensions.Hosting" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
 </Project>

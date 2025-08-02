@@ -18,6 +18,7 @@
     
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
     <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="9.0.5" />
