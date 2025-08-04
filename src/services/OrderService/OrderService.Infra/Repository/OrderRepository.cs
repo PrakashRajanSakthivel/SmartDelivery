@@ -15,7 +15,14 @@ namespace OrderService.Infra.Repository
             _context = context;
         }
 
-      
+        public override async Task<Order> GetByIdAsync(Guid id)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+        }
+
+       
     }
 
 }

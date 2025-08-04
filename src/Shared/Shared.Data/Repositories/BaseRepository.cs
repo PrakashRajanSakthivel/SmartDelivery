@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Data.Interfaces;
 using System.Linq.Expressions;
 
-
 namespace Shared.Data.Repositories
 {
     public class BaseRepository<T> : IRepository<T> where T : class
@@ -38,12 +37,15 @@ namespace Shared.Data.Repositories
 
         public async Task UpdateAsync(T entity)
         {
-            _context.Set<T>().Update(entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
 
         public async Task UpdateRangeAsync(IEnumerable<T> entities)
         {
-            _context.Set<T>().UpdateRange(entities);
+            foreach (var entity in entities)
+            {
+                _context.Entry(entity).State = EntityState.Modified;
+            }
         }
 
         public virtual void Remove(T entity)
@@ -51,8 +53,5 @@ namespace Shared.Data.Repositories
 
         public virtual void RemoveRange(IEnumerable<T> entities)
             => _dbSet.RemoveRange(entities);
-
-        public virtual async Task<int> SaveChangesAsync()
-            => await _context.SaveChangesAsync();
     }
 }

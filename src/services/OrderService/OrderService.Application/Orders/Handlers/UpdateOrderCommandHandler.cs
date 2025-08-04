@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -10,25 +9,24 @@ using OrderService.Application.Orders.Commands;
 using OrderService.Domain.Entites;
 using OrderService.Domain.Interfaces;
 
-// UpdateOrderHandler.cs
 namespace OrderService.Application.Orders.Handlers
 {
     public class UpdateOrderHandler : IRequestHandler<UpdateOrderCommand, bool>
     {
-        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderUnitOfWork _unitOfWork;
         private readonly ILogger<UpdateOrderHandler> _logger;
 
         public UpdateOrderHandler(
-            IOrderRepository orderRepository,
-            ILogger<UpdateOrderHandler> logger)
+            ILogger<UpdateOrderHandler> logger,
+            IOrderUnitOfWork unitOfWork)
         {
-            _orderRepository = orderRepository;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<bool> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
         {
-            var existingOrder = await _orderRepository.GetByIdAsync(request.UpdateOrderRequest.OrderId);
+            var existingOrder = await _unitOfWork.Orders.GetByIdAsync(request.UpdateOrderRequest.OrderId);
 
             if (existingOrder == null)
             {
@@ -40,29 +38,17 @@ namespace OrderService.Application.Orders.Handlers
             {
                 _logger.LogWarning("User {UserId} unauthorized to update order {OrderId}",
                     request.UpdateOrderRequest.UserId, request.UpdateOrderRequest.OrderId);
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException("User not authorized to update this order");
             }
 
-            //if (existingOrder.ETag != request.UpdateOrderRequest.ETag)
-            //{
-            //    throw new DbUpdateConcurrencyException();
-            //}
-
-            // Update the order items
-            existingOrder.OrderItems = request.UpdateOrderRequest.Items
-                .Select(item => new OrderItem
-                {
-                    OrderItemId = Guid.NewGuid(),
-                    MenuItemId = item.ProductId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.Price
-                }).ToList();
-
-            // You might want to update status or other fields
+            // Only update order properties, not navigation properties
+            existingOrder.TotalAmount = request.UpdateOrderRequest.Items.Sum(item => item.UnitPrice * item.Quantity);
             existingOrder.UpdatedAt = DateTime.UtcNow;
+            existingOrder.Notes = request.UpdateOrderRequest.Notes;
 
-            await _orderRepository.UpdateAsync(existingOrder);
-            await _orderRepository.SaveChangesAsync();
+            // Don't touch OrderItems at all
+            await _unitOfWork.Orders.UpdateAsync(existingOrder);
+            await _unitOfWork.CommitAsync();
 
             _logger.LogInformation("Order {OrderId} updated successfully", existingOrder.OrderId);
             return true;

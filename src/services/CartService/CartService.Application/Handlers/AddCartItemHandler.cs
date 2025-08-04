@@ -13,15 +13,17 @@ namespace CartService.Application.Handlers
     public class AddCartItemHandler : IRequestHandler<AddCartItemCommand, CartDto>
     {
         private readonly ICartRepository _cartRepository;
+        private readonly ICartUnitOfWork _unitOfWork;
 
-        public AddCartItemHandler(ICartRepository cartRepository)
+        public AddCartItemHandler(ICartRepository cartRepository, ICartUnitOfWork cartUnitOfWork)
         {
             _cartRepository = cartRepository;
+            _unitOfWork = cartUnitOfWork;
         }
 
         public async Task<CartDto> Handle(AddCartItemCommand request, CancellationToken cancellationToken)
         {
-            var cart = await _cartRepository.GetByUserIdAsync(request.UserId);
+            var cart = await _unitOfWork.Carts.GetByUserIdAsync(request.UserId);
 
             if (cart == null)
             {
@@ -35,7 +37,8 @@ namespace CartService.Application.Handlers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                cart = await _cartRepository.CreateAsync(cart);
+                await _unitOfWork.Carts.AddAsync(cart);
+                
             }
 
             // Check if item already exists
@@ -46,7 +49,7 @@ namespace CartService.Application.Handlers
                 // Update quantity
                 existingItem.Quantity += request.Item.Quantity;
                 existingItem.UpdatedAt = DateTime.UtcNow;
-                await _cartRepository.UpdateCartItemAsync(existingItem);
+                await _unitOfWork.Carts.UpdateCartItemAsync(existingItem);
             }
             else
             {
@@ -64,12 +67,13 @@ namespace CartService.Application.Handlers
                     UpdatedAt = DateTime.UtcNow
                 };
 
-                await _cartRepository.AddCartItemAsync(cartItem);
+                await _unitOfWork.Carts.AddCartItemAsync(cartItem);
             }
 
             // Update cart timestamp
             cart.UpdatedAt = DateTime.UtcNow;
-            cart = await _cartRepository.UpdateAsync(cart);
+            await _unitOfWork.Carts.UpdateAsync(cart);
+            await _unitOfWork.CommitAsync(cancellationToken);
 
             return new CartDto
             {

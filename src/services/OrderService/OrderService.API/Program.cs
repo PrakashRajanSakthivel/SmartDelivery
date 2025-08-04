@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using OrderService.Application.Mapper;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Elasticsearch;
@@ -7,9 +8,9 @@ using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
 using Shared.Http;
-using SharedSvc.Infra;
 using Shared.Logging;
 using Shared.Swagger;
+using SharedSvc.Infra;
 using SharedSvc.Infra.Order;
 
 
@@ -55,6 +56,8 @@ try
 
     builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+    builder.Services.AddAutoMapper(typeof(OrderProfile));
 
     var app = builder.Build();
 

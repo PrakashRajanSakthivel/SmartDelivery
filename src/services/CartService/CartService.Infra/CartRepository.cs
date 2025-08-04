@@ -1,6 +1,7 @@
 ﻿using CartService.Domain;
 using CartService.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Shared.Data.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,11 @@ using System.Threading.Tasks;
 
 namespace CartService.Infra
 {
-    public class CartRepository : ICartRepository
+    public class CartRepository : BaseRepository<Cart>, ICartRepository
     {
         private readonly CartDbContext _context;
 
-        public CartRepository(CartDbContext context)
-        {
-            _context = context;
-        }
+        public CartRepository(CartDbContext context) : base(context) { }
 
         public async Task<Cart?> GetByUserIdAsync(string userId)
         {
@@ -25,29 +23,7 @@ namespace CartService.Infra
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
-        public async Task<Cart> CreateAsync(Cart cart)
-        {
-            _context.Carts.Add(cart);
-            await _context.SaveChangesAsync();
-            return cart;
-        }
-
-        public async Task<Cart> UpdateAsync(Cart cart)
-        {
-            _context.Carts.Update(cart);
-            await _context.SaveChangesAsync();
-            return cart;
-        }
-
-        public async Task<bool> DeleteAsync(Guid cartId)
-        {
-            var cart = await _context.Carts.FindAsync(cartId);
-            if (cart == null) return false;
-
-            _context.Carts.Remove(cart);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+       
 
         public async Task<CartItem?> GetCartItemAsync(Guid cartId, string menuItemId)
         {
@@ -58,14 +34,14 @@ namespace CartService.Infra
         public async Task<CartItem> AddCartItemAsync(CartItem cartItem)
         {
             _context.CartItems.Add(cartItem);
-            await _context.SaveChangesAsync();
+
             return cartItem;
         }
 
         public async Task<CartItem> UpdateCartItemAsync(CartItem cartItem)
         {
             _context.CartItems.Update(cartItem);
-            await _context.SaveChangesAsync();
+
             return cartItem;
         }
 
@@ -75,7 +51,7 @@ namespace CartService.Infra
             if (cartItem == null) return false;
 
             _context.CartItems.Remove(cartItem);
-            await _context.SaveChangesAsync();
+
             return true;
         }
 
@@ -86,7 +62,7 @@ namespace CartService.Infra
                 .ToListAsync();
 
             _context.CartItems.RemoveRange(cartItems);
-            await _context.SaveChangesAsync();
+
         }
     }
 }

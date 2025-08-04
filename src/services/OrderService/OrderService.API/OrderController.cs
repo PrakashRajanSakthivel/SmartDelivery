@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Orders.Commands;
-using MediatR;
-using RestaurentService.Application.Restaurents.Commands;
-using RestaurentService.Application.Restaurents.Queries;
-using OrderService.Application.Orders.QueriesHandlers;
+using OrderService.Application.Orders.DTO;
 using OrderService.Application.Orders.Queries;
 
 namespace OrderService.API
@@ -25,16 +23,16 @@ namespace OrderService.API
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
         {
             var command = new CreateOrderCommand(request);
-            var orderId = await _mediator.Send(command);
+            var order = await _mediator.Send(command);
             return CreatedAtAction(
                    nameof(GetOrderById),
-                   new { id = orderId },
+                   new { id = order.Id },
                    new
                    {  // Response body
-                       id = orderId,
+                       id = order.Id,
                        _links = new
                        {
-                           self = Url.Link(nameof(GetOrderById), new { id = orderId })
+                           self = Url.Link(nameof(GetOrderById), new { id = order.Id })
                        }
                    });
         }
@@ -48,6 +46,17 @@ namespace OrderService.API
             var query = new GetOrderById(id);
             var result = await _mediator.Send(query);
             return Ok(result);
+        }
+
+        [HttpPut("{orderId}")]
+        public async Task<IActionResult> UpdateOrder(Guid orderId, [FromBody] UpdateOrderRequest request)
+        {
+            if (orderId != request.OrderId)
+                return BadRequest("OrderId mismatch");
+
+            var command = new UpdateOrderCommand(request);
+            var result = await _mediator.Send(command);
+            return Ok(new { success = result });
         }
 
         [HttpPut("{orderId}/status")]

@@ -1,37 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using OrderService.Application.Common;
 using OrderService.Application.Orders.Commands;
 using OrderService.Domain.Entites;
 using OrderService.Domain.Interfaces;
+using OrderService.Infra.Data;
 using OrderService.Infra.Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OrderService.Application.Orders.Handlers
 {
     // UpdateOrderStatusHandler.cs
     public class UpdateOrderStatusHandler : IRequestHandler<UpdateOrderStatusCommand, bool>
     {
-        private readonly IOrderRepository _orderRepository;
+        private readonly IOrderUnitOfWork _orderUnitofWork;
         private readonly ILogger<UpdateOrderStatusHandler> _logger;
 
-        public UpdateOrderStatusHandler(IOrderRepository repository, ILogger<UpdateOrderStatusHandler> logger)
+        public UpdateOrderStatusHandler(IOrderUnitOfWork orderUnitofWork, ILogger<UpdateOrderStatusHandler> logger)
         {
-            _orderRepository = repository;
+            _orderUnitofWork = orderUnitofWork;
             _logger = logger;
         }
 
         public async Task<bool> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
         {
-            var order = await _orderRepository.GetByIdAsync(request.OrderId);
+            var order = await _orderUnitofWork.Orders.GetByIdAsync(request.OrderId);
             if (order == null)
             {
                 _logger.LogWarning("Order {OrderId} not found", request.OrderId);
-                return false;
+                throw new KeyNotFoundException($"Order {request.OrderId} not found");
             }
 
             // Validate status transition
@@ -39,7 +40,7 @@ namespace OrderService.Application.Orders.Handlers
             {
                 _logger.LogWarning("Invalid status transition from {CurrentStatus} to {NewStatus}",
                     order.Status, request.NewStatus);
-                return false;
+                throw new InvalidOperationException($"Invalid status transition from {order.Status} to {request.NewStatus}");
             }
 
             // Update status
@@ -52,15 +53,23 @@ namespace OrderService.Application.Orders.Handlers
                 case OrderStatus.Cancelled:
                     order.CancelledAt = DateTime.UtcNow;
                     order.CancellationReason = request.Reason;
+                    order.IsCancelled = true;
                     break;
 
                 case OrderStatus.Delivered:
                     order.DeliveredAt = DateTime.UtcNow;
                     break;
+
+                case OrderStatus.Refunded:
+                    order.RefundedAt = DateTime.UtcNow;
+                    order.RefundReason = request.Reason;
+                    order.IsRefunded = true;
+                    break;
             }
 
-            await _orderRepository.UpdateAsync(order);
-            await _orderRepository.SaveChangesAsync();
+            await _orderUnitofWork.Orders.UpdateAsync(order);
+            await _orderUnitofWork.CommitAsync();
+
             _logger.LogInformation("Order {OrderId} status updated to {Status}",
                 order.OrderId, order.Status);
 
