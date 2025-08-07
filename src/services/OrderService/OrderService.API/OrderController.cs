@@ -3,20 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Orders.Commands;
 using OrderService.Application.Orders.DTO;
 using OrderService.Application.Orders.Queries;
+using SharedSvc.Response;
 
 namespace OrderService.API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrderController : ControllerBase
+    public class OrderController : BaseController
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<OrderController> _logger;
-
         public OrderController(IMediator mediator, ILogger<OrderController> logger)
+           : base(mediator, logger)
         {
-            _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpPost]
@@ -24,17 +21,8 @@ namespace OrderService.API
         {
             var command = new CreateOrderCommand(request);
             var order = await _mediator.Send(command);
-            return CreatedAtAction(
-                   nameof(GetOrderById),
-                   new { id = order.Id },
-                   new
-                   {  // Response body
-                       id = order.Id,
-                       _links = new
-                       {
-                           self = Url.Link(nameof(GetOrderById), new { id = order.Id })
-                       }
-                   });
+
+            return Created(order, "Order created successfully");
         }
 
         [HttpGet("{id}")]
@@ -43,9 +31,12 @@ namespace OrderService.API
             _logger.LogInformation("Fetching order with ID: {OrderId}", id);
             _logger.LogDebug("Fetching order with ID: {OrderId}", id);
             _logger.LogWarning("Fetching order with ID: {OrderId}", id);
+            _logger.LogInformation("Fetching order with ID: {OrderId}", id);
+
             var query = new GetOrderById(id);
             var result = await _mediator.Send(query);
-            return Ok(result);
+
+            return Success(result);
         }
 
         [HttpPut("{orderId}")]
@@ -56,17 +47,29 @@ namespace OrderService.API
 
             var command = new UpdateOrderCommand(request);
             var result = await _mediator.Send(command);
-            return Ok(new { success = result });
+
+            return Success(result, "Order updated successfully");
         }
 
         [HttpPut("{orderId}/status")]
-        public async Task<IActionResult> UpdateStatus(Guid orderId, [FromBody] UpdateOrderStatusCommand command)
+        public async Task<IActionResult> UpdateStatus(Guid orderId, [FromBody] UpdateOrderStatusRequest request)
         {
-            if (orderId != command.OrderId)
+            if (orderId != request.OrderId)
                 return BadRequest("OrderId mismatch");
+
+            var command = new UpdateOrderStatusCommand(
+                request.OrderId,
+                request.NewStatus,
+                request.Reason);
 
             await _mediator.Send(command);
             return NoContent();
+        }
+
+        [HttpPut("{orderId}/status/{id}")]
+        public async Task<IActionResult> GetStatus(Guid orderId)
+        {
+            throw new NotImplementedException("Pending...");
         }
 
         [HttpGet("logging-test")]

@@ -40,7 +40,7 @@ namespace OrderService.Application.Orders.Handlers
             {
                 _logger.LogWarning("Invalid status transition from {CurrentStatus} to {NewStatus}",
                     order.Status, request.NewStatus);
-                throw new InvalidOperationException($"Invalid status transition from {order.Status} to {request.NewStatus}");
+                throw new InvalidOrderStatusTransitionException(order.Status, request.NewStatus);
             }
 
             // Update status

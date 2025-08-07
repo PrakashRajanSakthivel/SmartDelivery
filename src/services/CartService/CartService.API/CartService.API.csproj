@@ -8,11 +8,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\SharedSvc\SharedSvc.csproj" />
-    <ProjectReference Include="..\..\src\Shared\SharedSvc\SharedSvc.csproj" />
     <ProjectReference Include="..\CartService.Application\CartService.Application.csproj" />
     <ProjectReference Include="..\CartService.Domain\CartService.Domain.csproj" />
     <ProjectReference Include="..\CartService.Infra\CartService.Infra.csproj" />
-    <ProjectReference Include="..\src\Shared\SharedSvc\SharedSvc.csproj" />
   </ItemGroup>
 
   <ItemGroup>

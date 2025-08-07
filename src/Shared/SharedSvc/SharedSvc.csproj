@@ -20,6 +20,7 @@
 	  <PackageReference Include="Serilog.Sinks.Console" />
 	  <PackageReference Include="Serilog.Sinks.Elasticsearch" />
 	  <PackageReference Include="Swashbuckle.AspNetCore" />
+	  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,13 +1,16 @@
 ﻿
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using OrderService.Infra.Data;
-using OrderService.Infra.Repository;
-using OrderService.Domain.Interfaces;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using OrderService.Application.Common;
 using OrderService.Application.Orders.Handlers;
-using MediatR;
+using OrderService.Application.Orders.Validators;
+using OrderService.Domain.Interfaces;
+using OrderService.Infra.Data;
+using OrderService.Infra.Repository;
+using SharedSvc.Validation;
 
 
 
@@ -26,6 +29,10 @@ namespace SharedSvc.Infra.Order
             services.AddScoped<IOrderUnitOfWork, OrderUnitOfWork>();
 
             services.AddScoped<IOrderRepository, OrderRepository>();
+
+            services.AddValidatorsFromAssembly<CreateOrderRequestValidator>();
+
+            services.AddValidatorsFromAssembly<UpdateOrderStatusCommandValidator>();
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(UpdateOrderStatusHandler).Assembly);
