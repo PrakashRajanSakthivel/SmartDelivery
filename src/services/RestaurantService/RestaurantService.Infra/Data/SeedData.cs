@@ -17,18 +17,24 @@ namespace RestaurantService.Infra.Data
                 if (!context.Restaurants.Any())
                 {
                     context.Restaurants.AddRange(
-                        new Restaurant { 
-                        Id = Guid.NewGuid(),
-                        Name = "Burger Palace",
-                        Description = "Home of the best burgers in town",
-                        IsActive = true,
-                        CreatedAt = DateTime.UtcNow,
-                        AverageRating = 4.5,
-                        DeliveryFee = 2.99m,
-                        MinOrderAmount = 10.00m,
-                        PhoneNumber = "123-456-7890",
-                        EstimatedDeliveryTime = 30
-                    });
+                        new Restaurant
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = "Burger Palace",
+                            Description = "Home of the best burgers in town",
+                            Status = RestaurantStatus.Active, 
+                            Email = "contact@burgerpalace.com", 
+                            OpeningHours = "10:00 AM - 10:00 PM", 
+                            CuisineType = "American", 
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow, 
+                            IsActive = true,
+                            AverageRating = 4.5,
+                            DeliveryFee = 2.99m,
+                            MinOrderAmount = 10.00m,
+                            PhoneNumber = "123-456-7890",
+                            EstimatedDeliveryTime = 30
+                        });
                     context.SaveChanges();
                 }
             }

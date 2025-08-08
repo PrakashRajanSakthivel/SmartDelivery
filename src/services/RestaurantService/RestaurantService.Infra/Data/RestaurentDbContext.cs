@@ -17,7 +17,7 @@ namespace RestaurentService.Infra.Data
         public RestaurantDbContext(DbContextOptions<RestaurantDbContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
