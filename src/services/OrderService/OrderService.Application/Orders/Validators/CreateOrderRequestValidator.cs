@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using OrderService.Application.Orders.Commands;
 using OrderService.Application.Orders.DTO;
 using System;
 using System.Collections.Generic;

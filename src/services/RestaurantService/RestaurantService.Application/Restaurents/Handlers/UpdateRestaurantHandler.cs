@@ -38,7 +38,7 @@ namespace RestaurentService.Application.Restaurents.Handlers
             restaurant.CuisineType = request.UpdateRestaurantRequest.CuisineType;
             restaurant.UpdatedAt = DateTime.UtcNow;
 
-            await _unitOfWork.Restaurants.UpdateAsync(restaurant);
+            // EF Core change tracking will automatically detect these changes
             await _unitOfWork.CommitAsync();
 
             _logger.LogInformation("Restaurant {RestaurantId} updated successfully", restaurant.Id);

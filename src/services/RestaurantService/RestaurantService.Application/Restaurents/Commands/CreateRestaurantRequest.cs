@@ -26,7 +26,7 @@ namespace RestaurentService.Application.Restaurents.Commands
         string Name,
         string? Description,
         decimal Price,
-        Guid? CategoryId = null,  // Make nullable explicitly
+        int? CategoryIndex = null,  // Index into the categories array
         bool IsVegetarian = false,
         bool IsVegan = false,
         int PreparationTime = 15);
