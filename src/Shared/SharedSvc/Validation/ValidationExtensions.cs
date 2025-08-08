@@ -16,7 +16,6 @@ namespace SharedSvc.Validation
 
         public static IServiceCollection AddValidatorsFromAssembly<T>(this IServiceCollection services)
         {
-            // Register all validators from the assembly containing type T
             services.AddValidatorsFromAssemblyContaining<T>();
 
             return services;

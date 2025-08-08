@@ -32,6 +32,9 @@ namespace RestaurentService.Infra.Data
                     .IsRequired()
                     .HasMaxLength(100);
 
+                entity.Property(r => r.Status)
+              .HasConversion<string>();
+
                 entity.Property(r => r.Description)
                     .HasMaxLength(500);
 

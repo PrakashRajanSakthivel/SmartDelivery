@@ -17,7 +17,7 @@ namespace RestaurantService.Application.Mapper
         {
             CreateMap<Restaurant, RestaurantDto>();
             CreateMap<Restaurant, RestaurantDetailsDto>();
-            // Add other custom mappings if needed
+            CreateMap<Restaurant, RestaurantStatusDto>();
         }
     }
 }

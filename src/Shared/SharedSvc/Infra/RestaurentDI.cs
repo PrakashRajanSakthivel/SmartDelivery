@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OrderService.Domain.Interfaces;
-using OrderService.Infra.Data;
 using RestaurantService.Domain.Interfaces;
 using RestaurantService.Infra.Data;
+using RestaurantService.Infra.Repository;
 using RestaurentService.Application.Restaurents.Handlers;
-using RestaurentService.Application.Restaurents.Queries;
-using RestaurentService.Application.Services;
+using RestaurentService.Application.Restaurents.Validators;
 using RestaurentService.Domain.Interfaces;
 using RestaurentService.Infra.Data;
 using RestaurentService.Infra.Repository;
+using SharedSvc.Common;
+using SharedSvc.Validation;
 
 namespace SharedSvc.Infra.Restaurant
 {
@@ -23,22 +20,24 @@ namespace SharedSvc.Infra.Restaurant
     {
         public static IServiceCollection AddRestaurentServiceInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Register OrderDbContext with the appropriate configuration
+            // Register RestaurantDbContext
             services.AddDbContext<RestaurantDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("RestaurantDatabase")));
 
             services.AddScoped<IRestaurantUnitOfWork, RestaurantUnitOfWork>();
-
-            // Register services
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
-            
+
+            // Register validators
+            services.AddValidatorsFromAssembly<CreateRestaurantValidator>();
+
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(CreateRestaurantHandler).Assembly);
                 cfg.Lifetime = ServiceLifetime.Scoped;
             });
 
-            // Add more services/repositories here later
+            // Add shared validation behavior
+            services.AddValidationBehavior();
 
             return services;
         }

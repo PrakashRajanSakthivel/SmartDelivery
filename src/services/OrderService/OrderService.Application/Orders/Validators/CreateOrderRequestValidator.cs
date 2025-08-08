@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace OrderService.Application.Orders.Validators
 {
-    public class CreateOrderRequestValidator : AbstractValidator<CreateOrderRequest>
+    public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
     {
-        public CreateOrderRequestValidator()
+        public CreateOrderCommandValidator()
         {
-            RuleFor(x => x.UserId).NotEmpty();
-            RuleFor(x => x.RestaurantId).NotEmpty();
-            RuleFor(x => x.Items).NotEmpty().WithMessage("Order must have at least one item");
-            RuleForEach(x => x.Items).SetValidator(new OrderItemRequestValidator());
+            RuleFor(x => x.createOrderRequest.UserId).NotEmpty();
+            RuleFor(x => x.createOrderRequest.RestaurantId).NotEmpty();
+            RuleFor(x => x.createOrderRequest.Items).NotEmpty().WithMessage("Order must have at least one item");
+            RuleForEach(x => x.createOrderRequest.Items).SetValidator(new OrderItemRequestValidator());
         }
     }
 

@@ -66,7 +66,7 @@ namespace OrderService.API
             return NoContent();
         }
 
-        [HttpPut("{orderId}/status/{id}")]
+        [HttpGet("{orderId}/status")]
         public async Task<IActionResult> GetStatus(Guid orderId)
         {
             throw new NotImplementedException("Pending...");

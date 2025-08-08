@@ -24,6 +24,11 @@ namespace RestaurentService.Domain.Entites
         public ICollection<MenuItem> MenuItems { get; set; } = [];
         public ICollection<Category> Categories { get; set; } = [];
         public string PhoneNumber { get; set; }
+        public string? Email { get; set; }
+        public string? OpeningHours { get; set; }
+        public string? CuisineType { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public RestaurantStatus Status { get; set; } = RestaurantStatus.Pending;
     }
 
 }

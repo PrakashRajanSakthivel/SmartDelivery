@@ -1,30 +1,28 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantService.Application.Restaurents.Queries;
 using RestaurentService.Application.Restaurents.Commands;
 using RestaurentService.Application.Restaurents.Queries;
-using RestaurentService.Application.Services;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using RestaurentService.Domain.Entites;
+using SharedSvc.Response;
 
 namespace Restaurent.API
 {
-    // RestaurantService.API/Controllers/RestaurantsController.cs
     [ApiController]
     [Route("api/restaurants")]
-    public class RestaurantsController : ControllerBase
+    public class RestaurantsController : BaseController
     {
-        private readonly IMediator _mediator;
-
-        public RestaurantsController(IMediator mediator)
-        => _mediator = mediator;
+        public RestaurantsController(IMediator mediator, ILogger<RestaurantsController> logger)
+            : base(mediator, logger)
+        {
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateRestaurant([FromBody] CreateRestaurantRequest request)
         {
             var command = new CreateRestaurantCommand(request);
             var restaurantId = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetRestaurant), new { id = restaurantId }, null);
+            return Created(restaurantId, "Restaurant created successfully");
         }
 
         [HttpGet("{id}")]
@@ -32,15 +30,15 @@ namespace Restaurent.API
         {
             var query = new GetRestaurantById(id);
             var result = await _mediator.Send(query);
-            return Ok(result);
+            return Success(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllRestaurants()
         {
-            var query = new GetAllRestaurantsQuery(); // Returns basic info only
+            var query = new GetAllRestaurantsQuery();
             var result = await _mediator.Send(query);
-            return Ok(result);
+            return Success(result);
         }
 
         [HttpGet("{id}/details")]
@@ -48,7 +46,31 @@ namespace Restaurent.API
         {
             var query = new GetRestaurantDetailsQuery(id);
             var result = await _mediator.Send(query);
-            return Ok(result);
+            return Success(result);
         }
+
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateRestaurantStatusRequest request)
+        {
+            if (id != request.RestaurantId)
+                return BadRequest("RestaurantId mismatch");
+
+            var command = new UpdateRestaurantStatusCommand(
+                request.RestaurantId,
+                request.NewStatus,
+                request.Reason);
+
+            await _mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpGet("{id}/status")]
+        public async Task<IActionResult> GetStatus(Guid id)
+        {
+            var query = new GetRestaurantStatus(id);
+            var result = await _mediator.Send(query);
+            return Success(result);
+        }
+
     }
 }

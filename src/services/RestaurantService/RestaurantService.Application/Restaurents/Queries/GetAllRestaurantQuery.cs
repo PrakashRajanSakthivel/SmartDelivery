@@ -8,5 +8,5 @@ using RestaurentService.Application.Restaurents.Queries;
 
 namespace RestaurantService.Application.Restaurents.Queries
 {
-    public record GetAllRestaurantsQuery : IRequest<List<RestaurantDto>>;
+        public record GetAllRestaurantsQuery : IRequest<List<RestaurantDto>>;
 }

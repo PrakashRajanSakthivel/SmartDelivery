@@ -30,7 +30,7 @@ namespace SharedSvc.Infra.Order
 
             services.AddScoped<IOrderRepository, OrderRepository>();
 
-            services.AddValidatorsFromAssembly<CreateOrderRequestValidator>();
+            services.AddValidatorsFromAssembly<CreateOrderCommandValidator>();
 
             services.AddValidatorsFromAssembly<UpdateOrderStatusCommandValidator>();
             services.AddMediatR(cfg =>
@@ -39,7 +39,7 @@ namespace SharedSvc.Infra.Order
                 cfg.Lifetime = ServiceLifetime.Scoped;
             });
 
-            // Add more services/repositories here later
+            services.AddValidationBehavior();
 
             return services;
         }
