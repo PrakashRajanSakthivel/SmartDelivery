@@ -2,18 +2,18 @@
 using CartService.Application.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SharedSvc.Response;
 
 namespace CartService.API
 {
     [ApiController]
     [Route("api/cart")]
-    public class CartController : ControllerBase
+    public class CartController : BaseController
     {
-        private readonly IMediator _mediator;
 
-        public CartController(IMediator mediator)
+        public CartController(IMediator mediator, ILogger<CartController> logger)
+                   : base(mediator, logger)
         {
-            _mediator = mediator;
         }
 
         [HttpGet("{userId}")]
@@ -23,9 +23,9 @@ namespace CartService.API
             var result = await _mediator.Send(command);
 
             if (result == null)
-                return NotFound();
+                return NotFound("Cart not found");
 
-            return Ok(result);
+            return Success(result);
         }
 
         [HttpPost("{userId}/items")]
@@ -38,7 +38,7 @@ namespace CartService.API
             };
 
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return Success(result, "Item added to cart successfully");
         }
 
         [HttpPut("{userId}/items/{menuItemId}")]
@@ -52,7 +52,7 @@ namespace CartService.API
             };
 
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return Success(result, "Cart item updated successfully");
         }
 
         [HttpDelete("{userId}/items/{menuItemId}")]
@@ -65,7 +65,7 @@ namespace CartService.API
             };
 
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return Success(result, "Item removed from cart successfully");
         }
 
         [HttpDelete("{userId}")]
@@ -73,7 +73,7 @@ namespace CartService.API
         {
             var command = new ClearCartCommand { UserId = userId };
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return Success(result, "Cart cleared successfully");
         }
     }
 }

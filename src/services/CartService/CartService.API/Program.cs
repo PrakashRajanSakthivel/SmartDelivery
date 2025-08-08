@@ -10,6 +10,10 @@ using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
 using SharedSvc.Infra.Cart;
+using FluentValidation;
+using CartService.Application.Validators;
+using SharedSvc.Exception;
+using SharedSvc.Validation;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +53,9 @@ try
         .AddCartServiceInfrastructure(builder.Configuration)
         .AddHttpClients(builder.Configuration)
         .AddJwtAuth(builder.Configuration)
-        .AddSwaggerSupport();
+        .AddSwaggerSupport()
+        .AddValidatorsFromAssemblyContaining<AddCartItemRequestValidator>()
+        .AddValidationBehavior();
 
     builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
@@ -70,6 +76,7 @@ try
     });
 
     app.UseMiddleware<CorrelationIdMiddleware>();
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
     app.UseDefaultLogging(builder.Configuration);
     app.UseJwtAuth();
 

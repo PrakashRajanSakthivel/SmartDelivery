@@ -30,7 +30,7 @@ namespace SharedSvc.Infra.Order
 
             services.AddScoped<IOrderRepository, OrderRepository>();
 
-            services.AddValidatorsFromAssembly<CreateOrderCommandValidator>();
+            services.AddValidatorsFromAssembly<UpdateCartItemRequestValidator>();
 
             services.AddValidatorsFromAssembly<UpdateOrderStatusCommandValidator>();
             services.AddMediatR(cfg =>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CartService.Application.Commands
 {
-    public class UpdateCartItemCommand : IRequest<CartDto>
+    public class UpdateCartItemCommand : IRequest<bool>
     {
         public string UserId { get; set; } = string.Empty;
         public string MenuItemId { get; set; } = string.Empty;

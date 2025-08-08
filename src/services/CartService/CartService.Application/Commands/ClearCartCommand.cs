@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CartService.Application.Commands
 {
-    public class ClearCartCommand : IRequest<CartDto>
+    public class ClearCartCommand : IRequest<bool>
     {
         public string UserId { get; set; } = string.Empty;
     }

@@ -1,50 +1,41 @@
 ﻿using CartService.Application.Commands;
 using CartService.Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace CartService.Application.Handlers
 {
     public class GetCartHandler : IRequestHandler<GetCartCommand, CartDto?>
     {
-        private readonly ICartRepository _cartRepository;
+        private readonly ICartUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly ILogger<GetCartHandler> _logger;
 
-        public GetCartHandler(ICartRepository cartRepository)
+        public GetCartHandler(ICartUnitOfWork unitOfWork, IMapper mapper, ILogger<GetCartHandler> logger)
         {
-            _cartRepository = cartRepository;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<CartDto?> Handle(GetCartCommand request, CancellationToken cancellationToken)
         {
-            var cart = await _cartRepository.GetByUserIdAsync(request.UserId);
+            _logger.LogInformation("Getting cart for user {UserId}", request.UserId);
+
+            var cart = await _unitOfWork.Carts.GetByUserIdAsync(request.UserId);
 
             if (cart == null)
-                return null;
-
-            return new CartDto
             {
-                Id = cart.Id.ToString(),
-                UserId = cart.UserId,
-                RestaurantId = cart.RestaurantId,
-                Items = cart.Items.Select(item => new CartItemDto
-                {
-                    Id = item.Id.ToString(),
-                    MenuItemId = item.MenuItemId,
-                    MenuItemName = item.MenuItemName,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice,
-                    TotalPrice = item.TotalPrice,
-                    ImageUrl = item.ImageUrl
-                }).ToList(),
-                TotalAmount = cart.TotalAmount,
-                TotalItems = cart.TotalItems,
-                CreatedAt = cart.CreatedAt,
-                UpdatedAt = cart.UpdatedAt
-            };
+                _logger.LogInformation("No cart found for user {UserId}", request.UserId);
+                return null;
+            }
+
+            var cartDto = _mapper.Map<CartDto>(cart);
+            _logger.LogInformation("Retrieved cart {CartId} with {ItemCount} items for user {UserId}", 
+                cart.Id, cart.Items.Count, request.UserId);
+
+            return cartDto;
         }
     }
 }

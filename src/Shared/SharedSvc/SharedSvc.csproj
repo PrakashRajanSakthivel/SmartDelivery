@@ -32,6 +32,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\CartService.Domain\CartService.Domain.csproj" />
 	  <ProjectReference Include="..\..\..\CartService.Infra\CartService.Infra.csproj" />
+	  <ProjectReference Include="..\..\services\CartService\CartService.Application\CartService.Application.csproj" />
 	  <ProjectReference Include="..\..\services\CartService\CartService.Domain\CartService.Domain.csproj" />
 	  <ProjectReference Include="..\..\services\CartService\CartService.Infra\CartService.Infra.csproj" />
 	  <ProjectReference Include="..\..\services\OrderService\OrderService.Application\OrderService.Application.csproj" />

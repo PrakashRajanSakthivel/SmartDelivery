@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace OrderService.Application.Orders.Validators
 {
-    public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
+    public class UpdateCartItemRequestValidator : AbstractValidator<CreateOrderCommand>
     {
-        public CreateOrderCommandValidator()
+        public UpdateCartItemRequestValidator()
         {
             RuleFor(x => x.createOrderRequest.UserId).NotEmpty();
             RuleFor(x => x.createOrderRequest.RestaurantId).NotEmpty();
