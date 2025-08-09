@@ -61,19 +61,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.Domain", "src\s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService.Infra", "src\services\CartService\CartService.Infra\CartService.Infra.csproj", "{9903F697-5471-40D6-97FF-3803C2497668}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{8A1B2C3D-4E5F-6G7H-8I9J-K0L1M2N3O4P5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{63997D0C-DCCD-463D-B29F-E0BA73B7763B}"
 	ProjectSection(SolutionItems) = preProject
-		frontend\package.json = frontend\package.json
 		frontend\angular.json = frontend\angular.json
-		frontend\tsconfig.json = frontend\tsconfig.json
-		frontend\README.md = frontend\README.md
-		frontend\src\main.ts = frontend\src\main.ts
-		frontend\src\index.html = frontend\src\index.html
-		frontend\src\styles.css = frontend\src\styles.css
-		frontend\src\app\app.module.ts = frontend\src\app\app.module.ts
-		frontend\src\app\app.component.ts = frontend\src\app\app.component.ts
 		frontend\src\app\app-routing.module.ts = frontend\src\app\app-routing.module.ts
+		frontend\src\app\app.component.ts = frontend\src\app\app.component.ts
+		frontend\src\app\app.module.ts = frontend\src\app\app.module.ts
+		frontend\src\index.html = frontend\src\index.html
+		frontend\src\main.ts = frontend\src\main.ts
+		frontend\package.json = frontend\package.json
+		frontend\README.md = frontend\README.md
+		frontend\src\styles.css = frontend\src\styles.css
+		frontend\tsconfig.json = frontend\tsconfig.json
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Infra", "src\services\PaymentService\PaymentService.Infra\PaymentService.Infra.csproj", "{6A23DD37-F9C7-4752-BAF5-99866D23768B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +155,10 @@ Global
 		{9903F697-5471-40D6-97FF-3803C2497668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9903F697-5471-40D6-97FF-3803C2497668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9903F697-5471-40D6-97FF-3803C2497668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A23DD37-F9C7-4752-BAF5-99866D23768B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A23DD37-F9C7-4752-BAF5-99866D23768B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A23DD37-F9C7-4752-BAF5-99866D23768B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A23DD37-F9C7-4752-BAF5-99866D23768B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,7 +190,7 @@ Global
 		{BA26800A-6D58-4DBD-8F56-C31FDF7AD0EE} = {5FE4F574-BC45-46BB-92E1-3679A2C032FC}
 		{49A9C04C-08AF-4193-82E0-55765B04290E} = {5FE4F574-BC45-46BB-92E1-3679A2C032FC}
 		{9903F697-5471-40D6-97FF-3803C2497668} = {5FE4F574-BC45-46BB-92E1-3679A2C032FC}
-		{8A1B2C3D-4E5F-6G7H-8I9J-K0L1M2N3O4P5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{6A23DD37-F9C7-4752-BAF5-99866D23768B} = {66256518-8007-405D-BBEB-F09F90F578C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05B03117-8F96-426D-BCF4-5219BD5922C5}

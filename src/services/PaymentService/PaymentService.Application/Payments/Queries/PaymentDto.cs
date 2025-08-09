@@ -1,12 +1,12 @@
-﻿using System;
+using PaymentService.Domain.Entites;
 
-namespace PaymentService.Domain.Entites
+namespace PaymentService.Application.Payments.Queries
 {
-    public class Payment
+    public class PaymentDto
     {
         public Guid PaymentId { get; set; }
-        public string PaymentIntentId { get; set; } = string.Empty; // External provider ID
-        public Guid? OrderId { get; set; } // Link to order if applicable
+        public string PaymentIntentId { get; set; } = string.Empty;
+        public Guid? OrderId { get; set; }
         public Guid? UserId { get; set; }
         
         public decimal Amount { get; set; }
@@ -20,21 +20,14 @@ namespace PaymentService.Domain.Entites
         public DateTime UpdatedAt { get; set; }
         public DateTime? ProcessedAt { get; set; }
         
-        // Error tracking
         public string? ErrorMessage { get; set; }
         public string? ErrorCode { get; set; }
         
-        // Provider details
         public string? ProviderTransactionId { get; set; }
-        public string? ProviderResponse { get; set; } // JSON response from provider
-        
-        // Metadata
         public string? Description { get; set; }
-        public string? Metadata { get; set; } // JSON for additional data
         
-        // Auditing
-        public int RetryCount { get; set; } = 0;
+        public int RetryCount { get; set; }
         public DateTime? LastRetryAt { get; set; }
-
+        
     }
 }

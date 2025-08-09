@@ -28,14 +28,6 @@ namespace RestaurantService.Application.Mapper
                 .ForMember(dest => dest.LastUpdated, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.LastChangeReason, opt => opt.Ignore()); // Set to null for now
 
-            // Menu Item mappings
-            //CreateMap<MenuItem, Restaurents.Queries.MenuItemDto>()
-            //    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null));
-
-            //// Category mappings
-            //CreateMap<Category, CategoryDto>()
-            //    .ForMember(dest => dest.MenuItems, opt => opt.MapFrom(src => src.MenuItems));
-
             // Restaurant Menu mapping
             CreateMap<Restaurant, RestaurantMenuDto>()
                 .ForMember(dest => dest.RestaurantId, opt => opt.MapFrom(src => src.Id))

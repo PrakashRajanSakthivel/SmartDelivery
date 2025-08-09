@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PaymentService.Application.Payment.Commands;
-using PaymentService.Application.Payment.DTO;
-using PaymentService.Application.Contracts;
+using PaymentService.Application.Payments.Commands;
+using PaymentService.Application.Payments.DTO;
 using SharedSvc.Response;
 
 namespace PaymentService.API
@@ -17,9 +16,9 @@ namespace PaymentService.API
         }
 
         [HttpPost("intents")]
-        public async Task<IActionResult> CreateIntent([FromBody] CreatePaymentIntentRequest request)
+        public async Task<IActionResult> CreateIntent([FromBody] CreatePaymentRequest request)
         {
-            var command = new CreatePaymentIntentCommand(request);
+            var command = new CreatePaymentCommand(request);
             var result = await _mediator.Send(command);
             return Success(result, "Payment intent created successfully");
         }
@@ -30,7 +29,7 @@ namespace PaymentService.API
             var command = new ConfirmPaymentCommand(request);
             var result = await _mediator.Send(command);
             
-            if (result.Succeeded)
+            if (result.Status == PaymentService.Domain.Entites.PaymentStatus.Succeeded)
             {
                 return Success(result, "Payment confirmed successfully");
             }
