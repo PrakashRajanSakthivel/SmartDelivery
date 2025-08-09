@@ -38,6 +38,7 @@
 	  <ProjectReference Include="..\..\services\OrderService\OrderService.Application\OrderService.Application.csproj" />
 	  <ProjectReference Include="..\..\services\OrderService\OrderService.Domain\OrderService.Domain.csproj" />
 	  <ProjectReference Include="..\..\services\OrderService\OrderService.Infra\OrderService.Infra.csproj" />
+	  <ProjectReference Include="..\..\services\PaymentService\PaymentService.Application\PaymentService.Application.csproj" />
 	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Application\RestaurantService.Application.csproj" />
 	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Domain\RestaurantService.Domain.csproj" />
 	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Infra\RestaurantService.Infra.csproj" />

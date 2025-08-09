@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR"  />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi"  />
-    <PackageReference Include="Swashbuckle.AspNetCore"  />
+	  <PackageReference Include="MediatR" />
+	  <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+	  <PackageReference Include="Serilog" />
+	  <PackageReference Include="Serilog.AspNetCore" />
+	  <PackageReference Include="Serilog.Extensions.Hosting" />
+	  <PackageReference Include="Serilog.Sinks.Elasticsearch" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\SharedSvc\SharedSvc.csproj" />
     <ProjectReference Include="..\PaymentService.Application\PaymentService.Application.csproj" />
   </ItemGroup>
 
