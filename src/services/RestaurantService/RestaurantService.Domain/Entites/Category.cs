@@ -12,6 +12,7 @@ namespace RestaurentService.Domain.Entites
         public Guid RestaurantId { get; set; }  // Important for restaurant-specific categories
         public string Name { get; set; } = default!;
         public int DisplayOrder { get; set; }  // Helps control how categories appear in UI
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public Restaurant Restaurant { get; set; } = default!;
         public ICollection<MenuItem> MenuItems { get; set; } = [];

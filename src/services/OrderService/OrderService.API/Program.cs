@@ -54,9 +54,6 @@ try
         .AddJwtAuth(builder.Configuration)
         .AddSwaggerSupport();
 
-    builder.Services.AddMediatR(cfg =>
-        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-
     builder.Services.AddAutoMapper(typeof(OrderProfile));
 
     var app = builder.Build();

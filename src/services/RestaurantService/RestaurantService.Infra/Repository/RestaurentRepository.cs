@@ -25,8 +25,6 @@ namespace RestaurentService.Infra.Repository
         {
             return await _context.Restaurants
                 .Include(r => r.MenuItems)
-                .Include(r => r.Categories)
-                    .ThenInclude(c => c.MenuItems)
                 .FirstOrDefaultAsync(r => r.Id == restaurantId);
         }
 

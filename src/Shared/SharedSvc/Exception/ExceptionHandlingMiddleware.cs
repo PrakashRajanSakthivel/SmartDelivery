@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OrderService.Application.Common;
 using SharedSvc.Response;
 using System.Net;
 using System.Text.Json;
@@ -33,6 +34,24 @@ namespace SharedSvc.Exception
             {
                 await _next(context);
             }
+            catch (OrderBusinessValidationException businessValidationEx)
+            {
+                _logger.LogWarning("Business validation failed: {Errors}",
+                    string.Join(", ", businessValidationEx.ValidationResult.Errors));
+
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                context.Response.ContentType = "application/json";
+
+                var errors = businessValidationEx.ValidationResult.Errors.Select(e => new ApiError(
+                    e,
+                    null,
+                    "BUSINESS_VALIDATION")).ToList();
+
+                var response = SharedSvc.Response.ApiResponse<object>.ValidationError(errors);
+
+                var jsonResponse = JsonSerializer.Serialize(response);
+                await context.Response.WriteAsync(jsonResponse);
+            }
             catch (ValidationException validationEx)
             {
                 _logger.LogWarning("Validation failed: {Errors}",
@@ -46,7 +65,7 @@ namespace SharedSvc.Exception
                     e.PropertyName,
                     e.ErrorCode)).ToList();
 
-                var response = ApiResponse<object>.ValidationError(errors);
+                var response = SharedSvc.Response.ApiResponse<object>.ValidationError(errors);
 
                 var jsonResponse = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(jsonResponse);
@@ -58,7 +77,7 @@ namespace SharedSvc.Exception
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 context.Response.ContentType = "application/json";
 
-                var response = ApiResponse<object>.Error("Resource not found");
+                var response = SharedSvc.Response.ApiResponse<object>.Error("Resource not found");
 
                 var jsonResponse = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(jsonResponse);
@@ -70,7 +89,7 @@ namespace SharedSvc.Exception
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 context.Response.ContentType = "application/json";
 
-                var response = ApiResponse<object>.Error("Unauthorized");
+                var response = SharedSvc.Response.ApiResponse<object>.Error("Unauthorized");
 
                 var jsonResponse = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(jsonResponse);
@@ -86,7 +105,7 @@ namespace SharedSvc.Exception
                     ? $"Database error: {sqlEx.Message}"
                     : "Database service is temporarily unavailable";
 
-                var response = ApiResponse<object>.Error(message);
+                var response = SharedSvc.Response.ApiResponse<object>.Error(message);
 
                 var jsonResponse = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(jsonResponse);
@@ -102,7 +121,7 @@ namespace SharedSvc.Exception
                     ? $"Database update error: {dbEx.Message}"
                     : "Unable to update the requested resource";
 
-                var response = ApiResponse<object>.Error(message);
+                var response = SharedSvc.Response.ApiResponse<object>.Error(message);
 
                 var jsonResponse = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(jsonResponse);
@@ -119,7 +138,7 @@ namespace SharedSvc.Exception
                     ? $"An error occurred: {ex.Message}"
                     : "An internal server error occurred";
 
-                var response = ApiResponse<object>.Error(message);
+                var response = SharedSvc.Response.ApiResponse<object>.Error(message);
 
                 var jsonResponse = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(jsonResponse);

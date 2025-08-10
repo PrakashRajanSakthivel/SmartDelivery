@@ -32,7 +32,7 @@ namespace Restaurent.API.Controllers
         }
 
         /// <summary>
-        /// Get restaurant by ID
+        /// Get restaurant by ID (basic info)
         /// </summary>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRestaurant(Guid id)
@@ -116,6 +116,62 @@ namespace Restaurent.API.Controllers
             _logger.LogInformation("Fetching restaurant details: {RestaurantId}", id);
             
             var query = new GetRestaurantDetailsQuery(id);
+            var result = await _mediator.Send(query);
+            
+            return Success(result);
+        }
+
+        /// <summary>
+        /// Get restaurant menu items (individual endpoint)
+        /// </summary>
+        [HttpGet("{id}/menu")]
+        public async Task<IActionResult> GetRestaurantMenu(Guid id)
+        {
+            _logger.LogInformation("Fetching restaurant menu: {RestaurantId}", id);
+            
+            var query = new GetRestaurantMenuQuery(id);
+            var result = await _mediator.Send(query);
+            
+            return Success(result);
+        }
+
+        /// <summary>
+        /// Get restaurant operating hours (individual endpoint)
+        /// </summary>
+        [HttpGet("{id}/operating-hours")]
+        public async Task<IActionResult> GetOperatingHours(Guid id)
+        {
+            _logger.LogInformation("Fetching restaurant operating hours: {RestaurantId}", id);
+            
+            var query = new GetRestaurantOperatingHoursQuery(id);
+            var result = await _mediator.Send(query);
+            
+            return Success(result);
+        }
+
+        /// <summary>
+        /// Check if restaurant is active for orders (individual endpoint)
+        /// </summary>
+        [HttpGet("{id}/is-active")]
+        public async Task<IActionResult> IsRestaurantActive(Guid id)
+        {
+            _logger.LogInformation("Checking if restaurant is active: {RestaurantId}", id);
+            
+            var query = new IsRestaurantActiveQuery(id);
+            var result = await _mediator.Send(query);
+            
+            return Success(result);
+        }
+
+        /// <summary>
+        /// Get restaurant validation data (consolidated endpoint for external services)
+        /// </summary>
+        [HttpGet("{id}/validation")]
+        public async Task<IActionResult> GetRestaurantForValidation(Guid id)
+        {
+            _logger.LogInformation("Fetching restaurant validation data: {RestaurantId}", id);
+            
+            var query = new GetRestaurantForValidationQuery(id);
             var result = await _mediator.Send(query);
             
             return Success(result);

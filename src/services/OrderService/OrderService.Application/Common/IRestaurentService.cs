@@ -1,7 +1,12 @@
-﻿namespace OrderService.Application.Common
+﻿using OrderService.Application.Orders.DTO;
+
+namespace OrderService.Application.Common
 {
     public interface IRestaurentService
     {
-        Task<bool> IsPresent(Guid id);
+        /// <summary>
+        /// Get restaurant validation data in a single optimized call
+        /// </summary>
+        Task<RestaurantValidationDto?> GetRestaurantForValidationAsync(Guid restaurantId);
     }
 }

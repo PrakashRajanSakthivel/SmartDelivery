@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\..\Shared\Shared.Data\Shared.Data.csproj" />
     <ProjectReference Include="..\OrderService.Domain\OrderService.Domain.csproj" />
     <ProjectReference Include="..\OrderService.Infra\OrderService.Infra.csproj" />
+    <ProjectReference Include="..\..\RestaurantService\RestaurantService.Domain\RestaurantService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

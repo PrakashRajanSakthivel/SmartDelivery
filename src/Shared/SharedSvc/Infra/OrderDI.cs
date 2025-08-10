@@ -12,11 +12,8 @@ using OrderService.Infra.Data;
 using OrderService.Infra.Repository;
 using SharedSvc.Validation;
 
-
-
 namespace SharedSvc.Infra.Order
 {
-
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddOrderServiceInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -25,17 +22,26 @@ namespace SharedSvc.Infra.Order
             services.AddDbContext<OrderDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("OrderDatabase")));
 
-            services.AddScoped<IRestaurentService, OrderService.Application.Common.RestaurentService>();
-            services.AddScoped<IOrderUnitOfWork, OrderUnitOfWork>();
+            // Register HTTP client for restaurant service communication
+            services.AddHttpClient<IRestaurentService, OrderService.Application.Common.RestaurentService>(client =>
+            {
+                client.BaseAddress = new Uri(configuration["RestaurantService:BaseUrl"] ?? "http://localhost:5001");
+                client.Timeout = TimeSpan.FromSeconds(30);
+            });
 
+            // Register business validation service
+            services.AddScoped<IOrderBusinessValidationService, OrderBusinessValidationService>();
+
+            services.AddScoped<IOrderUnitOfWork, OrderUnitOfWork>();
             services.AddScoped<IOrderRepository, OrderRepository>();
 
-            services.AddValidatorsFromAssembly<UpdateCartItemRequestValidator>();
-
+            services.AddValidatorsFromAssembly<CreateOrderRequestValidator>();
             services.AddValidatorsFromAssembly<UpdateOrderStatusCommandValidator>();
+            
+            // Register MediatR from Application assembly (like Restaurant service)
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(UpdateOrderStatusHandler).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(CreateOrderHandler).Assembly);
                 cfg.Lifetime = ServiceLifetime.Scoped;
             });
 

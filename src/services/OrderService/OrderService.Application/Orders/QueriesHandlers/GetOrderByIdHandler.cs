@@ -25,7 +25,7 @@ namespace OrderService.Application.Orders.QueriesHandlers
         {
             var order = await _repository.GetByIdAsync(query.Id);
             if (order == null)
-                throw new KeyNotFoundException("Restaurant not found");
+                throw new KeyNotFoundException("Order not found");
 
             return _mapper.Map<OrderDto>(order);
         }

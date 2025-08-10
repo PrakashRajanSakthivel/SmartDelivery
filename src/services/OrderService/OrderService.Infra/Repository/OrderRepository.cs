@@ -22,7 +22,13 @@ namespace OrderService.Infra.Repository
                 .FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
-       
+        public async Task<IEnumerable<Order>> GetByUserIdAsync(Guid userId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.CreatedAt)
+                .ToListAsync();
+        }
     }
-
 }

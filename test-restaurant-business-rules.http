@@ -1,0 +1,266 @@
+### ========================================
+### RESTAURANT SERVICE BUSINESS RULES TESTING
+### ========================================
+
+### ========================================
+### RESTAURANT STATUS TRANSITION TESTS
+### ========================================
+
+### 1. Valid Status Transition: Pending -> Active
+PUT http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/status
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "newStatus": "Active",
+  "reason": "Restaurant is ready to accept orders"
+}
+
+### 2. Invalid Status Transition: Active -> Delivered (should fail)
+PUT http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/status
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "newStatus": "Delivered",
+  "reason": "Invalid transition"
+}
+
+### 3. Valid Status Transition: Active -> Suspended
+PUT http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/status
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "newStatus": "Suspended",
+  "reason": "Temporary suspension due to maintenance"
+}
+
+### ========================================
+### RESTAURANT ACTIVATION/DESCRIPTION TESTS
+### ========================================
+
+### 4. Test Restaurant Activation (should succeed - has menu items)
+PUT http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/status
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "newStatus": "Active",
+  "reason": "Activating restaurant"
+}
+
+### 5. Test Restaurant Deactivation (should succeed - no active orders)
+PUT http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/status
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "newStatus": "Inactive",
+  "reason": "Temporarily closing"
+}
+
+### ========================================
+### MENU ITEM VALIDATION TESTS
+### ========================================
+
+### 6. Create Menu Item - Valid (should succeed)
+POST http://localhost:5001/api/menu-items
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "categoryId": "550e8400-e29b-41d4-a716-446655440010",
+  "name": "Hawaiian Pizza",
+  "description": "Pineapple and ham pizza",
+  "price": 18.99,
+  "isAvailable": true,
+  "isVegetarian": false,
+  "preparationTime": 25
+}
+
+### 7. Create Menu Item - Duplicate Name (should fail)
+POST http://localhost:5001/api/menu-items
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "categoryId": "550e8400-e29b-41d4-a716-446655440010",
+  "name": "Margherita Pizza",
+  "description": "Duplicate name test",
+  "price": 16.99,
+  "isAvailable": true,
+  "isVegetarian": true,
+  "preparationTime": 20
+}
+
+### 8. Create Menu Item - Invalid Price (should fail)
+POST http://localhost:5001/api/menu-items
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "categoryId": "550e8400-e29b-41d4-a716-446655440010",
+  "name": "Test Pizza",
+  "description": "Test pizza with invalid price",
+  "price": -5.00,
+  "isAvailable": true,
+  "isVegetarian": false,
+  "preparationTime": 20
+}
+
+### 9. Create Menu Item - Invalid Category (should fail)
+POST http://localhost:5001/api/menu-items
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "categoryId": "00000000-0000-0000-0000-000000000000",
+  "name": "Test Pizza",
+  "description": "Test pizza with invalid category",
+  "price": 15.99,
+  "isAvailable": true,
+  "isVegetarian": false,
+  "preparationTime": 20
+}
+
+### ========================================
+### CATEGORY VALIDATION TESTS
+### ========================================
+
+### 10. Create Category - Valid (should succeed)
+POST http://localhost:5001/api/categories
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "name": "Desserts",
+  "displayOrder": 3
+}
+
+### 11. Create Category - Duplicate Name (should fail)
+POST http://localhost:5001/api/categories
+Content-Type: application/json
+
+{
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "name": "Pizzas",
+  "displayOrder": 4
+}
+
+### 12. Delete Category - With Menu Items (should fail)
+DELETE http://localhost:5001/api/categories/550e8400-e29b-41d4-a716-446655440010?restaurantId=550e8400-e29b-41d4-a716-446655440001
+
+### 13. Delete Category - Without Menu Items (should succeed)
+DELETE http://localhost:5001/api/categories/550e8400-e29b-41d4-a716-446655440011?restaurantId=550e8400-e29b-41d4-a716-446655440001
+
+### ========================================
+### MENU ITEM DELETION TESTS
+### ========================================
+
+### 14. Delete Menu Item - Valid (should succeed)
+DELETE http://localhost:5001/api/menu-items/550e8400-e29b-41d4-a716-446655440004?restaurantId=550e8400-e29b-41d4-a716-446655440001
+
+### 15. Delete Menu Item - In Active Orders (should fail)
+# This would fail if the menu item is in active orders
+DELETE http://localhost:5001/api/menu-items/550e8400-e29b-41d4-a716-446655440002?restaurantId=550e8400-e29b-41d4-a716-446655440001
+
+### ========================================
+### RESTAURANT VALIDATION ENDPOINT TESTS
+### ========================================
+
+### 16. Test Optimized Validation Endpoint
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/validation
+
+### 17. Test Individual Endpoints
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/menu
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/is-active
+
+### ========================================
+### ORDER SERVICE INTEGRATION TESTS
+### ========================================
+
+### 18. Test Order Creation with Valid Restaurant
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 2,
+      "unitPrice": 15.99
+    },
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440004",
+      "itemName": "Caesar Salad",
+      "quantity": 1,
+      "unitPrice": 8.99
+    }
+  ],
+  "notes": "Extra cheese please"
+}
+
+### 19. Test Order Creation with Inactive Restaurant
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 1,
+      "unitPrice": 15.99
+    }
+  ]
+}
+
+### ========================================
+### EXPECTED RESPONSES
+### ========================================
+
+### Successful Status Update Response:
+# {
+#   "success": true,
+#   "message": "Restaurant status updated successfully"
+# }
+
+### Business Validation Error Response:
+# {
+#   "success": false,
+#   "message": "Validation failed",
+#   "errors": [
+#     {
+#       "property": null,
+#       "message": "Invalid status transition. Please check the allowed transitions for the current status.",
+#       "code": "BUSINESS_VALIDATION"
+#     }
+#   ]
+# }
+
+### Menu Item Creation Success:
+# {
+#   "success": true,
+#   "data": "generated-menu-item-id",
+#   "message": "Menu item created successfully"
+# }
+
+### Menu Item Duplicate Name Error:
+# {
+#   "success": false,
+#   "message": "Validation failed",
+#   "errors": [
+#     {
+#       "property": null,
+#       "message": "Menu item name 'Margherita Pizza' already exists in this restaurant",
+#       "code": "BUSINESS_VALIDATION"
+#     }
+#   ]
+# }

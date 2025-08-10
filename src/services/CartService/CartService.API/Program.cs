@@ -80,12 +80,9 @@ try
     app.UseDefaultLogging(builder.Configuration);
     app.UseJwtAuth();
 
-    //if (app.Environment.IsDevelopment())
-    //{
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapDevTokenGenerator(builder.Configuration); // Optional
-    //app.MapGet("/", [ApiExplorerSettings(IgnoreApi = true)] () => Results.Redirect("/swagger/index.html"));
     app.Use(async (context, next) =>
     {
         if (context.Request.Path == "/")
@@ -95,7 +92,6 @@ try
         }
         await next();
     });
-    //}
 
     app.UseHttpsRedirection();
     app.MapControllers();

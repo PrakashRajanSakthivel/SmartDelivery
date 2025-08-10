@@ -1,0 +1,171 @@
+### ========================================
+### RESTAURANT SERVICE API - COMPLETE TEST SUITE
+### ========================================
+
+### ========================================
+### INDIVIDUAL ENDPOINTS (For specific use cases)
+### ========================================
+
+### 1. Get Restaurant Basic Info
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001
+
+### 2. Get Restaurant Details (with categories)
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/details
+
+### 3. Get Restaurant Menu Items
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/menu
+
+### 4. Get Restaurant Status
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/status
+
+### 5. Get Restaurant Operating Hours
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/operating-hours
+
+### 6. Check if Restaurant is Active for Orders
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/is-active
+
+### ========================================
+### AGGREGATED ENDPOINTS (For external services)
+### ========================================
+
+### 7. Get Restaurant Validation Data (Optimized for Order Service)
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/validation
+
+### ========================================
+### ADMIN/INTERNAL ENDPOINTS
+### ========================================
+
+### 8. Get All Restaurants (Admin)
+GET http://localhost:5001/api/restaurants
+
+### 9. Get Active Restaurants (Customer-facing)
+GET http://localhost:5001/api/restaurants/active
+
+### 10. Search Restaurants
+GET http://localhost:5001/api/restaurants/search?term=pizza
+
+### ========================================
+### ORDER SERVICE INTEGRATION TESTS
+### ========================================
+
+### 11. Test Order Creation with Business Validation
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 2,
+      "unitPrice": 15.99
+    },
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440003",
+      "itemName": "Caesar Salad",
+      "quantity": 1,
+      "unitPrice": 8.99
+    }
+  ],
+  "notes": "Extra cheese please"
+}
+
+### 12. Test Order Creation with Invalid Restaurant
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "00000000-0000-0000-0000-000000000000",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 1,
+      "unitPrice": 15.99
+    }
+  ]
+}
+
+### ========================================
+### PERFORMANCE COMPARISON TESTS
+### ========================================
+
+### 13. Individual Endpoints (3 separate calls)
+# This would require 3 separate HTTP calls:
+# 1. GET /api/restaurants/{id}/is-active
+# 2. GET /api/restaurants/{id}/menu  
+# 3. GET /api/restaurants/{id}/operating-hours
+
+### 14. Aggregated Endpoint (1 call)
+# This requires only 1 HTTP call:
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/validation
+
+### ========================================
+### EXPECTED RESPONSES
+### ========================================
+
+### Individual Endpoint Response (e.g., /api/restaurants/{id}/is-active):
+# {
+#   "success": true,
+#   "data": {
+#     "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+#     "restaurantName": "Pizza Palace",
+#     "isActive": true,
+#     "status": "Active",
+#     "hasAvailableMenuItems": true,
+#     "isAvailableForOrders": true,
+#     "reason": null
+#   },
+#   "message": "Restaurant active status retrieved successfully"
+# }
+
+### Aggregated Endpoint Response (e.g., /api/restaurants/{id}/validation):
+# {
+#   "success": true,
+#   "data": {
+#     "id": "550e8400-e29b-41d4-a716-446655440001",
+#     "name": "Pizza Palace",
+#     "isActive": true,
+#     "status": "Active",
+#     "minOrderAmount": 10.00,
+#     "deliveryFee": 2.99,
+#     "openingHours": "09:00-22:00",
+#     "menuItems": [
+#       {
+#         "id": "550e8400-e29b-41d4-a716-446655440002",
+#         "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+#         "name": "Margherita Pizza",
+#         "price": 15.99,
+#         "isAvailable": true
+#       }
+#     ]
+#   },
+#   "message": "Restaurant validation data retrieved successfully"
+# }
+
+### ========================================
+### USAGE SCENARIOS
+### ========================================
+
+### Scenario 1: Frontend Restaurant Page
+# Use individual endpoints for flexibility:
+# - GET /api/restaurants/{id} (basic info)
+# - GET /api/restaurants/{id}/menu (menu items)
+# - GET /api/restaurants/{id}/operating-hours (hours)
+
+### Scenario 2: Order Service Validation
+# Use aggregated endpoint for performance:
+# - GET /api/restaurants/{id}/validation (all validation data)
+
+### Scenario 3: Admin Dashboard
+# Use individual endpoints for specific data:
+# - GET /api/restaurants/{id}/status (status only)
+# - GET /api/restaurants/{id}/is-active (active status)
+
+### Scenario 4: Mobile App
+# Use aggregated endpoints for reduced network calls:
+# - GET /api/restaurants/{id}/validation (for order creation)
+# - GET /api/restaurants/{id}/catalog (for browsing - future endpoint)

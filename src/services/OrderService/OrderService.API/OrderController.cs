@@ -39,6 +39,25 @@ namespace OrderService.API
             return Success(result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrders([FromQuery] Guid? userId = null)
+        {
+            _logger.LogInformation("Fetching orders. UserId: {UserId}", userId);
+            
+            if (userId.HasValue)
+            {
+                var query = new GetOrdersByUserId(userId.Value);
+                var result = await _mediator.Send(query);
+                return Success(result);
+            }
+            else
+            {
+                var query = new GetAllOrders();
+                var result = await _mediator.Send(query);
+                return Success(result);
+            }
+        }
+
         [HttpPut("{orderId}")]
         public async Task<IActionResult> UpdateOrder(Guid orderId, [FromBody] UpdateOrderRequest request)
         {

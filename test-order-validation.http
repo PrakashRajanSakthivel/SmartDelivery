@@ -1,0 +1,146 @@
+### Test Business Validation - Valid Order Creation
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 2,
+      "unitPrice": 15.99
+    },
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440003",
+      "itemName": "Caesar Salad",
+      "quantity": 1,
+      "unitPrice": 8.99
+    }
+  ],
+  "notes": "Extra cheese please"
+}
+
+### Test Business Validation - Invalid Restaurant (Non-existent)
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "00000000-0000-0000-0000-000000000000",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 2,
+      "unitPrice": 15.99
+    }
+  ]
+}
+
+### Test Business Validation - Invalid Menu Item (Non-existent)
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "00000000-0000-0000-0000-000000000000",
+      "itemName": "Non-existent Item",
+      "quantity": 1,
+      "unitPrice": 10.00
+    }
+  ]
+}
+
+### Test Business Validation - Price Mismatch
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 1,
+      "unitPrice": 5.00
+    }
+  ]
+}
+
+### Test Business Validation - Below Minimum Order Amount
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 1,
+      "unitPrice": 1.00
+    }
+  ]
+}
+
+### Test Business Validation - Invalid Quantity
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 0,
+      "unitPrice": 15.99
+    }
+  ]
+}
+
+### Test Business Validation - Too Many Items
+POST http://localhost:5000/api/order
+Content-Type: application/json
+
+{
+  "userId": "550e8400-e29b-41d4-a716-446655440000",
+  "restaurantId": "550e8400-e29b-41d4-a716-446655440001",
+  "items": [
+    {
+      "menuItemId": "550e8400-e29b-41d4-a716-446655440002",
+      "itemName": "Margherita Pizza",
+      "quantity": 100,
+      "unitPrice": 15.99
+    }
+  ]
+}
+
+### Test Order Status Update - Valid Transition
+PUT http://localhost:5000/api/order/550e8400-e29b-41d4-a716-446655440004/status
+Content-Type: application/json
+
+{
+  "newStatus": "Paid",
+  "reason": "Payment confirmed"
+}
+
+### Test Order Status Update - Invalid Transition
+PUT http://localhost:5000/api/order/550e8400-e29b-41d4-a716-446655440004/status
+Content-Type: application/json
+
+{
+  "newStatus": "Delivered",
+  "reason": "Invalid transition"
+}
+
+### Test Restaurant Validation API (New Optimized Endpoint)
+GET http://localhost:5001/api/restaurants/550e8400-e29b-41d4-a716-446655440001/validation

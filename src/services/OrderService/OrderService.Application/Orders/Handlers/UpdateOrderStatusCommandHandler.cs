@@ -19,11 +19,16 @@ namespace OrderService.Application.Orders.Handlers
     {
         private readonly IOrderUnitOfWork _orderUnitofWork;
         private readonly ILogger<UpdateOrderStatusHandler> _logger;
+        private readonly IOrderBusinessValidationService _businessValidationService;
 
-        public UpdateOrderStatusHandler(IOrderUnitOfWork orderUnitofWork, ILogger<UpdateOrderStatusHandler> logger)
+        public UpdateOrderStatusHandler(
+            IOrderUnitOfWork orderUnitofWork, 
+            ILogger<UpdateOrderStatusHandler> logger,
+            IOrderBusinessValidationService businessValidationService)
         {
             _orderUnitofWork = orderUnitofWork;
             _logger = logger;
+            _businessValidationService = businessValidationService;
         }
 
         public async Task<bool> Handle(UpdateOrderStatusCommand request, CancellationToken cancellationToken)
@@ -35,11 +40,13 @@ namespace OrderService.Application.Orders.Handlers
                 throw new KeyNotFoundException($"Order {request.OrderId} not found");
             }
 
-            // Validate status transition
-            if (!IsValidTransition(order.Status, request.NewStatus))
+            // Validate status transition using business validation service
+            var validationResult = await _businessValidationService.ValidateOrderStatusTransitionAsync(order.Status, request.NewStatus);
+            
+            if (!validationResult.IsValid)
             {
-                _logger.LogWarning("Invalid status transition from {CurrentStatus} to {NewStatus}",
-                    order.Status, request.NewStatus);
+                _logger.LogWarning("Invalid status transition from {CurrentStatus} to {NewStatus}: {Errors}",
+                    order.Status, request.NewStatus, string.Join(", ", validationResult.Errors));
                 throw new InvalidOrderStatusTransitionException(order.Status, request.NewStatus);
             }
 
@@ -75,46 +82,5 @@ namespace OrderService.Application.Orders.Handlers
 
             return true;
         }
-
-        private bool IsValidTransition(OrderStatus current, OrderStatus next)
-        {
-            var allowedTransitions = new Dictionary<OrderStatus, List<OrderStatus>>
-            {
-                [OrderStatus.Created] = new()
-        {
-            OrderStatus.Paid,
-            OrderStatus.Cancelled
-        },
-                [OrderStatus.Paid] = new()
-        {
-            OrderStatus.Preparing,
-            OrderStatus.Cancelled,
-            OrderStatus.Refunded  // Added refund option
-        },
-                [OrderStatus.Preparing] = new()
-        {
-            OrderStatus.ReadyForDelivery,
-            OrderStatus.Cancelled  // Can cancel during preparation
-        },
-                [OrderStatus.ReadyForDelivery] = new()
-        {
-            OrderStatus.OutForDelivery,
-            OrderStatus.Cancelled  // Rare but possible before dispatch
-        },
-                [OrderStatus.OutForDelivery] = new()
-        {
-            OrderStatus.Delivered,
-            OrderStatus.Returned  // For failed deliveries
-        },
-                [OrderStatus.Delivered] = new()
-        {
-            OrderStatus.Refunded  // Post-delivery refunds
-        }
-            };
-
-            return allowedTransitions.TryGetValue(current, out var validNext)
-                   && validNext.Contains(next);
-        }
     }
-
 }
