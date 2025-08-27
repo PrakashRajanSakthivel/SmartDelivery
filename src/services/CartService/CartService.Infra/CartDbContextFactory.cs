@@ -13,7 +13,6 @@ namespace CartService.Infra
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory()) // Important: this resolves correctly when running CLI
                 .AddJsonFile("appsettings.json", optional: false)
-                .AddEnvironmentVariables()
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<CartDbContext>();
