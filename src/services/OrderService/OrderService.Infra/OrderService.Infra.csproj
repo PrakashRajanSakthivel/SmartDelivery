@@ -11,6 +11,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <LinkBase>OrderService.Infra</LinkBase>
     </Content>
   </ItemGroup>
 
