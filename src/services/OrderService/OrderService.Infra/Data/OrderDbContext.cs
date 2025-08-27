@@ -24,12 +24,16 @@ namespace OrderService.Infra.Data
             {
                 entity.HasKey(o => o.OrderId);
                 entity.Property(o => o.Status).HasConversion<string>();
+
                 entity.HasMany(o => o.OrderItems)
                       .WithOne(i => i.Order)
-                      .HasForeignKey(i => i.OrderId);
+                      .HasForeignKey(i => i.OrderId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasMany(o => o.StatusHistories)
                       .WithOne(s => s.Order)
-                      .HasForeignKey(s => s.OrderId);
+                      .HasForeignKey(s => s.OrderId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<OrderItem>(entity =>
@@ -44,5 +48,4 @@ namespace OrderService.Infra.Data
             });
         }
     }
-
 }

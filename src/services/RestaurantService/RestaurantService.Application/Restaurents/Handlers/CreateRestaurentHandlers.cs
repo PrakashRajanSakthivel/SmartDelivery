@@ -64,7 +64,6 @@ namespace RestaurentService.Application.Restaurents.Handlers
 
             // 4. Persist all together
             await _restaurantRepository.AddRestaurantWithMenuAsync(restaurant, categories, menuItems);
-            await _restaurantRepository.SaveChangesAsync();
 
             return restaurant.Id;
         }

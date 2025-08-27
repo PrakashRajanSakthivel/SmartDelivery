@@ -3,31 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using OrderService.Application.Common;
 using OrderService.Application.Orders.Commands;
+using OrderService.Application.Orders.Queries;
 using OrderService.Domain.Entites;
 using OrderService.Domain.Interfaces;
 
 namespace OrderService.Application.Orders.Handlers
 {
-    public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, Guid>
+    public class CreateOrderHandler : IRequestHandler<CreateOrderCommand, OrderDto>
     {
-        private readonly IOrderRepository _orderRepository;
         private readonly IRestaurentService _restaurentService;
+        private readonly IOrderUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CreateOrderHandler(IOrderRepository orderRepository, IRestaurentService restaurentService)
+        public CreateOrderHandler(IRestaurentService restaurentService, IOrderUnitOfWork unitOfWork, IMapper mapper)
         {
-            _orderRepository = orderRepository;
             _restaurentService = restaurentService;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<OrderDto> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
             //if (!await _restaurentService.IsPresent(request.createOrderRequest.RestaurantId))
             //{
             //    throw new Exception("Restaurant not found");
             //}
+
+            var now = DateTime.UtcNow;
+            var orderItems = request.createOrderRequest.Items.Select(item => new OrderItem
+            {
+                OrderItemId = Guid.NewGuid(),
+                MenuItemId = item.MenuItemId,
+                ItemName = item.ItemName,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice,
+                TotalPrice = item.UnitPrice * item.Quantity
+            }).ToList();
+
+            var totalAmount = orderItems.Sum(item => item.TotalPrice);
 
             var order = new Order
             {
@@ -35,20 +52,18 @@ namespace OrderService.Application.Orders.Handlers
                 UserId = request.createOrderRequest.UserId,
                 RestaurantId = request.createOrderRequest.RestaurantId,
                 Status = OrderStatus.Created,
-                CreatedAt = DateTime.UtcNow,
-                OrderItems = request.createOrderRequest.Items.Select(item => new OrderItem
-                {
-                    OrderItemId = Guid.NewGuid(),
-                    MenuItemId = item.ProductId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.Price
-                }).ToList()
+                TotalAmount = totalAmount,
+                CreatedAt = now,
+                UpdatedAt = now,
+                DeliveredAt = now, // This should be set when actually delivered
+                Notes = request.createOrderRequest.Notes,
+                OrderItems = orderItems
             };
 
-            await _orderRepository.AddAsync(order);
-            await _orderRepository.SaveChangesAsync();
+            await _unitOfWork.Orders.AddAsync(order);
+            await _unitOfWork.CommitAsync();
 
-            return order.OrderId;
+            return _mapper.Map<OrderDto>(order);
         }
     }
 }

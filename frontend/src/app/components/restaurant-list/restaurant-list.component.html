@@ -1,0 +1,52 @@
+<div class="restaurant-list">
+  <h1>🍽️ Choose Your Restaurant</h1>
+  
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Loading restaurants...</p>
+  </div>
+
+  <div class="error" *ngIf="error">
+    <mat-icon>error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadRestaurants()">
+      Try Again
+    </button>
+  </div>
+
+  <div class="restaurant-grid" *ngIf="!loading && !error">
+    <mat-card 
+      *ngFor="let restaurant of restaurants" 
+      class="restaurant-card"
+      (click)="selectRestaurant(restaurant.id)"
+    >
+      <div class="restaurant-image">
+        <mat-icon class="restaurant-icon">{{ getRestaurantIcon(restaurant.name) }}</mat-icon>
+      </div>
+      
+      <mat-card-content>
+        <h2>{{ restaurant.name }}</h2>
+        <p class="description">{{ restaurant.description }}</p>
+        
+        <div class="restaurant-info">
+          <div class="rating">
+            <mat-icon>star</mat-icon>
+            <span>{{ restaurant.averageRating.toFixed(1) }}</span>
+          </div>
+          
+          <div class="delivery-info">
+            <div class="delivery-fee">
+              <mat-icon>local_shipping</mat-icon>
+              <span>${{ restaurant.deliveryFee.toFixed(2) }} delivery</span>
+            </div>
+            
+            <div class="delivery-time">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ restaurant.estimatedDeliveryTime }} min</span>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div> 
