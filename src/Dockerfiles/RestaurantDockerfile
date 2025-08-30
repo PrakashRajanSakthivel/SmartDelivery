@@ -1,4 +1,9 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
+
+# Set environment variables directly in the Dockerfile
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Kubernetes
+
 COPY ./publish/RestaurantService/ .
 ENTRYPOINT ["dotnet", "RestaurantService.API.dll"]
