@@ -13,6 +13,10 @@
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
 	  <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+	  <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+	  <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+	  <PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
+	  <PackageReference Include="AspNetCore.HealthChecks.Uris" />
 	  <PackageReference Include="Polly" />
 	  <PackageReference Include="Polly.Extensions.Http" />
 	  <PackageReference Include="Serilog" />
@@ -29,8 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\CartService.Domain\CartService.Domain.csproj" />
-	  <ProjectReference Include="..\..\..\CartService.Infra\CartService.Infra.csproj" />
 	  <ProjectReference Include="..\..\services\CartService\CartService.Domain\CartService.Domain.csproj" />
 	  <ProjectReference Include="..\..\services\CartService\CartService.Infra\CartService.Infra.csproj" />
 	  <ProjectReference Include="..\..\services\OrderService\OrderService.Application\OrderService.Application.csproj" />

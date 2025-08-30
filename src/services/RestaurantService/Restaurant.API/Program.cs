@@ -8,6 +8,8 @@ using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
 using SharedSvc.Infra.Restaurant;
+using SharedSvc.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +21,16 @@ builder.Services
     .AddRestaurentServiceInfrastructure(builder.Configuration)
     .AddHttpClients(builder.Configuration)
     .AddJwtAuth(builder.Configuration)
-    .AddSwaggerSupport();
+    .AddSwaggerSupport()
+    .AddCustomHealthChecks(new CustomHealthCheckOptions
+     {
+        
+         ServiceName = "RestaurantService",
+         DatabaseConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"),
+         ElasticsearchUri = builder.Configuration["Elasticsearch:Uri"],
+         EnableDatabaseCheck = true,
+         EnableElasticsearchCheck = true
+     });
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
@@ -55,6 +66,8 @@ if (app.Environment.IsDevelopment())
         await next();
     });
 }
+
+app.UseCustomHealthChecks("RestaurantService");
 
 app.UseHttpsRedirection();
 app.MapControllers();
