@@ -6,4 +6,8 @@ ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Kubernetes
 
 COPY ./publish/RestaurantService/ .
+
+# Remove default configuration files to ensure only mounted config is used
+RUN rm -f appsettings.json appsettings.Development.json appsettings.Production.json
+
 ENTRYPOINT ["dotnet", "RestaurantService.API.dll"]
