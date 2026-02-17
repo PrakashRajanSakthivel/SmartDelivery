@@ -1,30 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="MediatR" />
-	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-	  <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
-	  <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-	  <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-	  <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
-	  <PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
-	  <PackageReference Include="AspNetCore.HealthChecks.Uris" />
-	  <PackageReference Include="Polly" />
-	  <PackageReference Include="Polly.Extensions.Http" />
-	  <PackageReference Include="Serilog" />
-	  <PackageReference Include="Serilog.Settings.Configuration" />
-	  <PackageReference Include="Serilog.Sinks.Console" />
-	  <PackageReference Include="Serilog.Sinks.Elasticsearch" />
-	  <PackageReference Include="Swashbuckle.AspNetCore" />
-	</ItemGroup>
+  <ItemGroup>
+  <PackageReference Include="MediatR" />
+  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+  <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+  <PackageReference Include="Microsoft.EntityFrameworkCore" />
+  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+  <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+  <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+  <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+  <PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
+  <PackageReference Include="AspNetCore.HealthChecks.Uris" />
+  <PackageReference Include="Polly" />
+  <PackageReference Include="Polly.Extensions.Http" />
+  <PackageReference Include="Serilog" />
+  <PackageReference Include="Serilog.Settings.Configuration" />
+  <PackageReference Include="Serilog.Sinks.Console" />
+  <PackageReference Include="Serilog.Sinks.Elasticsearch" />
+  <PackageReference Include="Swashbuckle.AspNetCore" />
+</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Identity\" />
