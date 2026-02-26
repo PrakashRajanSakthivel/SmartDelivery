@@ -28,6 +28,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Identity\" />
+	  <Folder Include="Infra\User\" />
 	  <Folder Include="Messaging\" />
 	  <Folder Include="Polly\" />
 	</ItemGroup>
@@ -41,6 +42,9 @@
 	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Application\RestaurantService.Application.csproj" />
 	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Domain\RestaurantService.Domain.csproj" />
 	  <ProjectReference Include="..\..\services\RestaurantService\RestaurantService.Infra\RestaurantService.Infra.csproj" />
+    <ProjectReference Include="..\..\services\AuthService\AuthService.Infra\AuthService.Infra.csproj" />
+    <ProjectReference Include="..\..\services\AuthService\AuthService.Application\AuthService.Application.csproj" />
+    <ProjectReference Include="..\..\services\AuthService\AuthService.Domain\AuthService.Domain.csproj" />
 	  <ProjectReference Include="..\Shared.Data\Shared.Data.csproj" />
 	</ItemGroup>
 	

@@ -1,44 +1,109 @@
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
+using Shared.Authentication;
+using Shared.CorrelationId;
+using Shared.DevTools;
+using Shared.Logging;
+using Shared.Swagger;
+using SharedSvc.Exception;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Logging.ClearProviders();
 
-var app = builder.Build();
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+var elasticUri = configuration["Elasticsearch:Uri"];
+
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri ?? "http://localhost:9200"))
+    {
+        AutoRegisterTemplate = true,
+        IndexFormat = "paymentservice-logs-{0:yyyy.MM.dd}",
+        CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
+        EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
+                           EmitEventFailureHandling.RaiseCallback |
+                           EmitEventFailureHandling.ThrowException
+    })
+    .CreateLogger();
+
+try
 {
+    Log.Information("Starting up the Payment Service");
+    builder.Host.UseSerilog();
+
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddJwtAuth(builder.Configuration);
+    builder.Services.AddSwaggerSupport();
+
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+    });
+
+    builder.Services.AddMediatR(cfg =>
+        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+    var app = builder.Build();
+
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    app.UseSerilogRequestLogging(options =>
+    {
+        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+        {
+            diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+            diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+        };
+        options.GetLevel = (ctx, elapsed, ex) =>
+            ex != null ? LogEventLevel.Error :
+            ctx.Response.StatusCode > 499 ? LogEventLevel.Error :
+            LogEventLevel.Information;
+    });
+
+    app.UseMiddleware<CorrelationIdMiddleware>();
+    app.UseDefaultLogging(builder.Configuration);
+    app.UseJwtAuth();
+    app.UseCors("AllowFrontend");
+
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.MapDevTokenGenerator(builder.Configuration);
+
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/")
+        {
+            context.Response.Redirect("/swagger/index.html");
+            return;
+        }
+        await next();
+    });
+
+    app.UseHttpsRedirection();
+    app.MapControllers();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
 }
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

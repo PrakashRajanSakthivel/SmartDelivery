@@ -24,13 +24,23 @@ builder.Services
     .AddSwaggerSupport()
     .AddCustomHealthChecks(new CustomHealthCheckOptions
      {
-        
+
          ServiceName = "RestaurantService",
          DatabaseConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"),
          ElasticsearchUri = builder.Configuration["Elasticsearch:Uri"],
          EnableDatabaseCheck = true,
          EnableElasticsearchCheck = true
      });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
@@ -42,6 +52,7 @@ var app = builder.Build();
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseDefaultLogging(builder.Configuration);
 app.UseJwtAuth();
+app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment())
 {

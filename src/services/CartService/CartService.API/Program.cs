@@ -51,6 +51,16 @@ try
         .AddJwtAuth(builder.Configuration)
         .AddSwaggerSupport();
 
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+    });
+
     builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
@@ -72,6 +82,7 @@ try
     app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseDefaultLogging(builder.Configuration);
     app.UseJwtAuth();
+    app.UseCors("AllowFrontend");
 
     //if (app.Environment.IsDevelopment())
     //{

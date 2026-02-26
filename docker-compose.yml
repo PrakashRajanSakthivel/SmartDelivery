@@ -1,0 +1,160 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: smartdelivery-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourPassword123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    networks:
+      - smartdelivery-network
+
+  # Elasticsearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.0
+    container_name: smartdelivery-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - smartdelivery-network
+
+  # Kibana (optional, for logs visualization)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.10.0
+    container_name: smartdelivery-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      - smartdelivery-network
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: src/Dockerfiles/UserDockerfile
+    container_name: smartdelivery-user-service
+    ports:
+      - "5000:5000"
+    environment:
+      ASPNETCORE_URLS: http://+:5000
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__UserDatabase: "Server=sqlserver,1433;Database=UserServiceDb;User Id=sa;Password=YourPassword123!;TrustServerCertificate=true;"
+      Jwt__SecretKey: "VerySecretKeyForSigningTokens123!"
+      Jwt__Issuer: "SmartOrderSystem"
+      Jwt__Audience: "SmartOrderSystemUsers"
+      Elasticsearch__Uri: "http://elasticsearch:9200"
+    depends_on:
+      - sqlserver
+      - elasticsearch
+    networks:
+      - smartdelivery-network
+
+  # Restaurant Service
+  restaurant-service:
+    build:
+      context: .
+      dockerfile: src/Dockerfiles/RestaurantDockerfile
+    container_name: smartdelivery-restaurant-service
+    ports:
+      - "5002:5002"
+    environment:
+      ASPNETCORE_URLS: http://+:5002
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=RestaurantServiceDb;User Id=sa;Password=YourPassword123!;TrustServerCertificate=true;"
+      Jwt__SecretKey: "VerySecretKeyForSigningTokens123!"
+      Jwt__Issuer: "SmartOrderSystem"
+      Jwt__Audience: "SmartOrderSystemUsers"
+      Elasticsearch__Uri: "http://elasticsearch:9200"
+    depends_on:
+      - sqlserver
+      - elasticsearch
+    networks:
+      - smartdelivery-network
+
+  # Order Service
+  order-service:
+    build:
+      context: .
+      dockerfile: src/Dockerfiles/OrderDockerfile
+    container_name: smartdelivery-order-service
+    ports:
+      - "5001:5001"
+    environment:
+      ASPNETCORE_URLS: http://+:5001
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__OrderDatabase: "Server=sqlserver,1433;Database=OrderServiceDb;User Id=sa;Password=YourPassword123!;TrustServerCertificate=true;"
+      Jwt__SecretKey: "VerySecretKeyForSigningTokens123!"
+      Jwt__Issuer: "SmartOrderSystem"
+      Jwt__Audience: "SmartOrderSystemUsers"
+      Elasticsearch__Uri: "http://elasticsearch:9200"
+    depends_on:
+      - sqlserver
+      - elasticsearch
+    networks:
+      - smartdelivery-network
+
+  # Cart Service
+  cart-service:
+    build:
+      context: .
+      dockerfile: src/Dockerfiles/CartDockerfile
+    container_name: smartdelivery-cart-service
+    ports:
+      - "5003:5003"
+    environment:
+      ASPNETCORE_URLS: http://+:5003
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__CartDatabase: "Server=sqlserver,1433;Database=CartServiceDb;User Id=sa;Password=YourPassword123!;TrustServerCertificate=true;"
+      Jwt__SecretKey: "VerySecretKeyForSigningTokens123!"
+      Jwt__Issuer: "SmartOrderSystem"
+      Jwt__Audience: "SmartOrderSystemUsers"
+      Elasticsearch__Uri: "http://elasticsearch:9200"
+    depends_on:
+      - sqlserver
+      - elasticsearch
+    networks:
+      - smartdelivery-network
+
+  # Payment Service
+  payment-service:
+    build:
+      context: .
+      dockerfile: src/Dockerfiles/PaymentDockerfile
+    container_name: smartdelivery-payment-service
+    ports:
+      - "5004:5004"
+    environment:
+      ASPNETCORE_URLS: http://+:5004
+      ASPNETCORE_ENVIRONMENT: Development
+      Jwt__SecretKey: "VerySecretKeyForSigningTokens123!"
+      Jwt__Issuer: "SmartOrderSystem"
+      Jwt__Audience: "SmartOrderSystemUsers"
+      Elasticsearch__Uri: "http://elasticsearch:9200"
+    depends_on:
+      - elasticsearch
+    networks:
+      - smartdelivery-network
+
+volumes:
+  sqldata:
+  esdata:
+
+networks:
+  smartdelivery-network:
+    driver: bridge
