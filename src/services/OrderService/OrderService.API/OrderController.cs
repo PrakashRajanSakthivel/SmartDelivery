@@ -7,7 +7,7 @@ using OrderService.Application.Orders.Queries;
 namespace OrderService.API
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     public class OrderController : ControllerBase
     {
         private readonly IMediator _mediator;

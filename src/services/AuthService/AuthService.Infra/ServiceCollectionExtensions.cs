@@ -10,7 +10,8 @@ namespace AuthService.Infra
         public static IServiceCollection AddAuthServiceInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<IUserRepository, HardcodedUserRepository>();
-            services.AddSingleton<IAuthService, AuthService>();
+            services.AddSingleton<IAuthService, AuthService>(sp =>
+                new AuthService(sp.GetRequiredService<IConfiguration>()));
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(LoginCommandHandler).Assembly);

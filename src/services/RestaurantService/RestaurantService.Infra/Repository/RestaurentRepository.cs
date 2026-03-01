@@ -59,6 +59,7 @@ namespace RestaurentService.Infra.Repository
             await _context.MenuItems.AddRangeAsync(menuItems);
 
             // SaveChangesAsync() will commit all as one transaction
+            await _context.SaveChangesAsync();
         }
 
     }

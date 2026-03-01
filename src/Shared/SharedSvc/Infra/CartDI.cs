@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using CartService.Application.Handlers;
 using CartService.Domain.Interfaces;
 using CartService.Infra;
+using CartService.Infra.Data;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SharedSvc.Infra.Cart
 {
@@ -10,13 +13,14 @@ namespace SharedSvc.Infra.Cart
     {
         public static IServiceCollection AddCartServiceInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Register CartDbContext with the appropriate configuration
             services.AddDbContext<CartDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("CartDatabase")));
 
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICartUnitOfWork, CartUnitOfWork>();
 
-            // Add more services/repositories here later
+            services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(typeof(AddCartItemHandler).Assembly));
 
             return services;
         }

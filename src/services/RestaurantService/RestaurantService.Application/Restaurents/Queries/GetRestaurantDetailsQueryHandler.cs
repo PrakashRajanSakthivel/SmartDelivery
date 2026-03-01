@@ -25,7 +25,7 @@ namespace RestaurantService.Application.Restaurents.Queries
         public async Task<RestaurantDetailsDto> Handle(GetRestaurantDetailsQuery request, CancellationToken ct)
         {
 
-            var restaurant = await _repository.GetByIdAsync(request.RestaurantId);
+            var restaurant = await _repository.GetRestaurantWithMenuAsync(request.RestaurantId);
             if (restaurant == null)
             {
                throw new Exception($"Restaurant with ID {request.RestaurantId} not found");

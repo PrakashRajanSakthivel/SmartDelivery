@@ -32,13 +32,13 @@ namespace CartService.Application.Handlers
                 {
                     Id = Guid.NewGuid(),
                     UserId = request.UserId,
-                    RestaurantId = string.Empty, // Will be set when first item is added
+                    RestaurantId = string.Empty,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 };
 
                 await _unitOfWork.Carts.AddAsync(cart);
-                
+                await _unitOfWork.CommitAsync(cancellationToken); // Persist Cart before inserting CartItems (FK constraint)
             }
 
             // Check if item already exists

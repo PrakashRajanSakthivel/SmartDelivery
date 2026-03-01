@@ -14,7 +14,10 @@ namespace CartService.Infra
     {
         private readonly CartDbContext _context;
 
-        public CartRepository(CartDbContext context) : base(context) { }
+        public CartRepository(CartDbContext context) : base(context)
+        {
+            _context = context;
+        }
 
         public async Task<Cart?> GetByUserIdAsync(string userId)
         {

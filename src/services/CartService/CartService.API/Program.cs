@@ -24,17 +24,17 @@ var configuration = new ConfigurationBuilder()
 var elasticUri = configuration["Elasticsearch:Uri"];
 
 Log.Logger = new LoggerConfiguration()
-     .Enrich.FromLogContext()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
     .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
     {
         AutoRegisterTemplate = true,
         IndexFormat = "cartservice-logs-{0:yyyy.MM.dd}",
         CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
         EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
-                           EmitEventFailureHandling.RaiseCallback |
-                       EmitEventFailureHandling.ThrowException
+                           EmitEventFailureHandling.RaiseCallback
     })
-.CreateLogger();
+    .CreateLogger();
 
 try
 {
@@ -60,9 +60,6 @@ try
                   .AllowAnyHeader();
         });
     });
-
-    builder.Services.AddMediatR(cfg =>
-        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
     var app = builder.Build();
 
