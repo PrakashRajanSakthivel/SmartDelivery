@@ -7,7 +7,7 @@ using Shared.DevTools;
 using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
-using SharedSvc.Infra.Restaurant;
+using RestaurantService.Infra;
 using SharedSvc.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 

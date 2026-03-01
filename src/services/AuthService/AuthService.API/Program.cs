@@ -1,4 +1,4 @@
-using SharedSvc.Infra.Auth;
+using AuthService.Infra;
 
 
 var builder = WebApplication.CreateBuilder(args);

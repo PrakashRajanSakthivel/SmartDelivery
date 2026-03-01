@@ -1,13 +1,12 @@
-﻿using CartService.Application.Handlers;
+using CartService.Application.Handlers;
 using CartService.Domain.Interfaces;
-using CartService.Infra;
 using CartService.Infra.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SharedSvc.Infra.Cart
+namespace CartService.Infra
 {
     public static class ServiceCollectionExtensions
     {

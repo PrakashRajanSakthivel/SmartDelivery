@@ -55,7 +55,6 @@ namespace OrderService.Application.Orders.Handlers
                 TotalAmount = totalAmount,
                 CreatedAt = now,
                 UpdatedAt = now,
-                DeliveredAt = now, // This should be set when actually delivered
                 Notes = request.createOrderRequest.Notes,
                 OrderItems = orderItems
             };

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using PaymentService.Application.common;
+using PaymentService.Application.Payment.CommandHandlers;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Elasticsearch;
@@ -54,8 +56,10 @@ try
         });
     });
 
+    builder.Services.AddSingleton<IPaymentService, MockPaymentService>();
+
     builder.Services.AddMediatR(cfg =>
-        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+        cfg.RegisterServicesFromAssembly(typeof(CreatePaymentIntentCommandHandler).Assembly));
 
     var app = builder.Build();
 

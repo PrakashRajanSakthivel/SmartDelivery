@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
+using PaymentService.Application.Contracts;
 using PaymentService.Application.Payment.DTO;
 
 namespace PaymentService.Application.Payment.Commands
 {
-    public record CreatePaymentIntentCommand(CreatePaymentIntentRequest request) : IRequest<Guid>;
+    public record CreatePaymentIntentCommand(CreatePaymentIntentRequest Request) : IRequest<PaymentIntentResponse>;
 }

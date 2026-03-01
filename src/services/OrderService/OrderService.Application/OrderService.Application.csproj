@@ -10,7 +10,6 @@
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Serilog" />
   </ItemGroup>
@@ -18,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.Data\Shared.Data.csproj" />
     <ProjectReference Include="..\OrderService.Domain\OrderService.Domain.csproj" />
-    <ProjectReference Include="..\OrderService.Infra\OrderService.Infra.csproj" />
   </ItemGroup>
 
 </Project>

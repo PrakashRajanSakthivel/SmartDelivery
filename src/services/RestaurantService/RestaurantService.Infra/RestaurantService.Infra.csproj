@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" >
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.Data\Shared.Data.csproj" />
+    <ProjectReference Include="..\RestaurantService.Application\RestaurantService.Application.csproj" />
     <ProjectReference Include="..\RestaurantService.Domain\RestaurantService.Domain.csproj" />
   </ItemGroup>
 

@@ -4,8 +4,6 @@ using OrderService.Application.Common;
 using OrderService.Application.Orders.Commands;
 using OrderService.Domain.Entites;
 using OrderService.Domain.Interfaces;
-using OrderService.Infra.Data;
-using OrderService.Infra.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;

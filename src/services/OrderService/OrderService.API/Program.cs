@@ -10,8 +10,9 @@ using Shared.DevTools;
 using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
-using SharedSvc.Infra;
-using SharedSvc.Infra.Order;
+using OrderService.Application.Common;
+using OrderService.Application.Orders.Handlers;
+using OrderService.Infra;
 
 
 
@@ -65,7 +66,15 @@ try
     });
 
     builder.Services.AddMediatR(cfg =>
-        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+        cfg.RegisterServicesFromAssembly(typeof(CreateOrderHandler).Assembly));
+
+    builder.Services.AddHttpClient<IRestaurentService, RestaurentService>(client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration["RestaurantService:BaseUrl"]!);
+    })
+    .AddHttpMessageHandler<CorrelationIdDelegatingHandler>()
+    .AddPolicyHandler(HttpClientPolicies.GetRetryPolicy())
+    .AddPolicyHandler(HttpClientPolicies.GetCircuitBreakerPolicy());
 
     builder.Services.AddAutoMapper(typeof(OrderProfile));
 

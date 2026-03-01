@@ -17,19 +17,15 @@ namespace PaymentService.API
         [HttpPost("intents")]
         public async Task<IActionResult> CreateIntent([FromBody] CreatePaymentIntentRequest request)
         {
-            var command = new CreatePaymentIntentCommand(request);
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new CreatePaymentIntentCommand(request));
             return Ok(result);
         }
 
         [HttpPost("confirm")]
         public async Task<IActionResult> Confirm([FromBody] ConfirmPaymentRequest request)
         {
-            var command = new ConfirmPaymentCommand(request);
-            var result = await _mediator.Send(command);
-            return Ok();
+            var result = await _mediator.Send(new ConfirmPaymentCommand(request));
+            return Ok(result);
         }
     }
-
-
 }

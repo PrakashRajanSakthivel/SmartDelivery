@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\SharedSvc\SharedSvc.csproj" />
     <ProjectReference Include="..\RestaurantService.Application\RestaurantService.Application.csproj" />
+    <ProjectReference Include="..\RestaurantService.Infra\RestaurantService.Infra.csproj" />
   </ItemGroup>
 
 </Project>

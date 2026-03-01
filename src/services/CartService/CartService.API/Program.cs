@@ -9,7 +9,7 @@ using Shared.DevTools;
 using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
-using SharedSvc.Infra.Cart;
+using CartService.Infra;
 
 
 var builder = WebApplication.CreateBuilder(args);
