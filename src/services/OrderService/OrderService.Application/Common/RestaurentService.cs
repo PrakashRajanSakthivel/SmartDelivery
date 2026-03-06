@@ -25,5 +25,12 @@ namespace OrderService.Application.Common
 
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<string> PingAsync()
+        {
+            var response = await _httpClient.GetAsync("/api/diagnostics/ping");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
     }
 }

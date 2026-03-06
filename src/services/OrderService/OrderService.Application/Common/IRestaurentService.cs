@@ -3,5 +3,6 @@
     public interface IRestaurentService
     {
         Task<bool> IsPresent(Guid id);
+        Task<string> PingAsync();
     }
 }
