@@ -10,76 +10,113 @@ using Shared.Swagger;
 using RestaurantService.Infra;
 using SharedSvc.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddControllers();
+builder.Logging.ClearProviders();
 
-builder.Services
-    .AddEndpointsApiExplorer()
-    .AddRestaurentServiceInfrastructure(builder.Configuration)
-    .AddHttpClients(builder.Configuration)
-    .AddJwtAuth(builder.Configuration)
-    .AddSwaggerSupport()
-    .AddCustomHealthChecks(new CustomHealthCheckOptions
-     {
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
+    .Build();
 
-         ServiceName = "RestaurantService",
-         DatabaseConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"),
-         ElasticsearchUri = builder.Configuration["Elasticsearch:Uri"],
-         EnableDatabaseCheck = true,
-         EnableElasticsearchCheck = true
-     });
+var elasticUri = configuration["Elasticsearch:Uri"];
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri ?? "http://localhost:9200"))
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        AutoRegisterTemplate = true,
+        IndexFormat = "restaurantservice-logs-{0:yyyy.MM.dd}",
+        CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
+        EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
+                           EmitEventFailureHandling.RaiseCallback
+    })
+    .CreateLogger();
+
+try
+{
+    Log.Information("Starting up the Restaurant Service");
+    builder.Host.UseSerilog();
+
+    builder.Services
+        .AddControllers();
+
+    builder.Services
+        .AddEndpointsApiExplorer()
+        .AddRestaurentServiceInfrastructure(builder.Configuration)
+        .AddHttpClients(builder.Configuration)
+        .AddJwtAuth(builder.Configuration)
+        .AddSwaggerSupport()
+        .AddCustomHealthChecks(new CustomHealthCheckOptions
+        {
+            ServiceName = "RestaurantService",
+            DatabaseConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"),
+            ElasticsearchUri = builder.Configuration["Elasticsearch:Uri"],
+            EnableDatabaseCheck = true,
+            EnableElasticsearchCheck = true
+        });
+
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
     });
-});
 
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+    builder.Services.AddMediatR(cfg =>
+        cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
-builder.Services.AddAutoMapper(typeof(RestaurantProfile));
+    builder.Services.AddAutoMapper(typeof(RestaurantProfile));
 
-var app = builder.Build();
+    var app = builder.Build();
 
-app.UseMiddleware<CorrelationIdMiddleware>();
-app.UseDefaultLogging(builder.Configuration);
-app.UseJwtAuth();
-app.UseCors("AllowFrontend");
+    app.UseMiddleware<CorrelationIdMiddleware>();
+    app.UseDefaultLogging(builder.Configuration);
+    app.UseJwtAuth();
+    app.UseCors("AllowFrontend");
 
-if (app.Environment.IsDevelopment())
-{
-    using (var scope = app.Services.CreateScope())
+    if (app.Environment.IsDevelopment())
     {
-        var services = scope.ServiceProvider;
-        var dbContext = services.GetRequiredService<RestaurantDbContext>();
-        SeedData.Initialize(dbContext);
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var dbContext = services.GetRequiredService<RestaurantDbContext>();
+            SeedData.Initialize(dbContext);
+        }
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        app.MapDevTokenGenerator(builder.Configuration);
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/")
+            {
+                context.Response.Redirect("/swagger/index.html");
+                return;
+            }
+            await next();
+        });
     }
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.MapDevTokenGenerator(builder.Configuration); // Optional
-    //app.MapGet("/", [ApiExplorerSettings(IgnoreApi = true)] () => Results.Redirect("/swagger/index.html"));
-    app.Use(async (context, next) =>
-    {
-        if (context.Request.Path == "/")
-        {
-            context.Response.Redirect("/swagger/index.html");
-            return;
-        }
-        await next();
-    });
+    app.UseCustomHealthChecks("RestaurantService");
+    app.UseHttpsRedirection();
+    app.MapControllers();
+    app.Run();
 }
-
-app.UseCustomHealthChecks("RestaurantService");
-
-app.UseHttpsRedirection();
-app.MapControllers();
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
