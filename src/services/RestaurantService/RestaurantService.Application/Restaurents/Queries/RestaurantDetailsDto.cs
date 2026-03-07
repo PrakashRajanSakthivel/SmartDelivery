@@ -21,10 +21,11 @@ namespace RestaurantService.Application.Restaurents.Queries
     int DisplayOrder);
 
     public record MenuItemDto(
+        Guid Id,
         string Name,
         string? Description,
         decimal Price,
-        Guid? CategoryId = null,  // Make nullable explicitly
+        Guid? CategoryId = null,
         bool IsVegetarian = false,
         bool IsVegan = false,
         int PreparationTime = 15);

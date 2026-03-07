@@ -1,0 +1,101 @@
+<div class="restaurant-menu-page">
+  <!-- Header -->
+  <div class="menu-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      <h1>{{ restaurant?.name }}</h1>
+      <p class="restaurant-description">{{ restaurant?.description }}</p>
+    </div>
+    <button mat-icon-button (click)="goToCart()" class="cart-button" [matBadge]="getCartItemCount()" matBadgeColor="accent">
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+    <p>Loading menu...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error" *ngIf="error">
+    <mat-icon>error</mat-icon>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadRestaurant()">
+      Try Again
+    </button>
+  </div>
+
+  <!-- Menu Content -->
+  <div class="menu-content" *ngIf="!loading && !error && restaurant">
+    <!-- Restaurant Info -->
+    <div class="restaurant-info">
+      <div class="info-item">
+        <mat-icon>star</mat-icon>
+        <span>{{ restaurant.averageRating.toFixed(1) }}</span>
+      </div>
+      <div class="info-item">
+        <mat-icon>local_shipping</mat-icon>
+        <span>${{ restaurant.deliveryFee.toFixed(2) }} delivery</span>
+      </div>
+      <div class="info-item">
+        <mat-icon>schedule</mat-icon>
+        <span>{{ restaurant.estimatedDeliveryTime }} min</span>
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+      <button 
+        mat-button 
+        *ngFor="let category of restaurant.categories"
+        [class.active]="selectedCategory === category.id"
+        (click)="selectCategory(category.id)"
+        class="category-tab"
+      >
+        {{ category.name }}
+      </button>
+    </div>
+
+    <!-- Menu Items -->
+    <div class="menu-items" *ngIf="getSelectedCategory()">
+      <div class="menu-item" *ngFor="let item of getSelectedCategory()?.menuItems">
+        <div class="item-image">
+          <mat-icon class="food-icon">{{ getFoodIcon(item.name) }}</mat-icon>
+        </div>
+        <div class="item-details">
+          <div class="item-header">
+            <h3>{{ item.name }}</h3>
+            <div class="item-badges">
+              <span class="badge vegetarian" *ngIf="item.isVegetarian">Veg</span>
+              <span class="badge vegan" *ngIf="item.isVegan">Vegan</span>
+            </div>
+          </div>
+          <p class="item-description">{{ item.description }}</p>
+          <div class="item-footer">
+            <span class="item-price">${{ item.price.toFixed(2) }}</span>
+            <button 
+              mat-raised-button 
+              color="primary" 
+              (click)="addToCart(item)"
+              [disabled]="!item.isAvailable"
+              class="add-to-cart-btn"
+            >
+              <mat-icon>add</mat-icon>
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Category -->
+    <div class="empty-category" *ngIf="getSelectedCategory() && getSelectedCategory()?.menuItems?.length === 0">
+      <mat-icon>restaurant_menu</mat-icon>
+      <h3>No items in this category</h3>
+      <p>Check back later for new menu items!</p>
+    </div>
+  </div>
+</div> 

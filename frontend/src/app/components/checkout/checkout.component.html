@@ -1,0 +1,209 @@
+<div class="checkout-page">
+  <!-- Header -->
+  <div class="checkout-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Checkout</h1>
+  </div>
+
+  <!-- Success State -->
+  <div class="success-state" *ngIf="paymentSuccess">
+    <div class="success-content">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <h2>Order Placed Successfully!</h2>
+      <p>Thank you for your order. You will receive a confirmation email shortly.</p>
+      <button mat-raised-button color="primary" (click)="goToHome()">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Form -->
+  <div class="checkout-content" *ngIf="!paymentSuccess">
+    <div class="checkout-grid">
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+        
+        <div class="cart-items">
+          <div class="cart-item" *ngFor="let item of cartItems">
+            <div class="item-image">
+              <mat-icon class="food-icon">{{ getFoodIcon(item.menuItemName) }}</mat-icon>
+            </div>
+            <div class="item-details">
+              <h3>{{ item.menuItemName }}</h3>
+              <p class="item-quantity">Qty: {{ item.quantity }}</p>
+            </div>
+            <div class="item-price">
+              ${{ item.totalPrice.toFixed(2) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="order-totals">
+          <div class="total-line">
+            <span>Subtotal:</span>
+            <span>${{ subtotal.toFixed(2) }}</span>
+          </div>
+          <div class="total-line">
+            <span>Delivery Fee:</span>
+            <span>${{ deliveryFee.toFixed(2) }}</span>
+          </div>
+          <div class="total-line total">
+            <span>Total:</span>
+            <span>${{ total.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Form -->
+      <div class="payment-form">
+        <h2>Payment Information</h2>
+        
+        <form [formGroup]="checkoutForm" (ngSubmit)="processPayment()">
+          <!-- Personal Information -->
+          <div class="form-section">
+            <h3>Personal Information</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" required>
+                <mat-error *ngIf="checkoutForm.get('firstName')?.hasError('required')">
+                  First name is required
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName" required>
+                <mat-error *ngIf="checkoutForm.get('lastName')?.hasError('required')">
+                  Last name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" type="email" required>
+                <mat-error *ngIf="checkoutForm.get('email')?.hasError('required')">
+                  Email is required
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('email')?.hasError('email')">
+                  Please enter a valid email
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Phone</mat-label>
+                <input matInput formControlName="phone" required>
+                <mat-error *ngIf="checkoutForm.get('phone')?.hasError('required')">
+                  Phone is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="address" required>
+              <mat-error *ngIf="checkoutForm.get('address')?.hasError('required')">
+                Address is required
+              </mat-error>
+            </mat-form-field>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput formControlName="city" required>
+                <mat-error *ngIf="checkoutForm.get('city')?.hasError('required')">
+                  City is required
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>ZIP Code</mat-label>
+                <input matInput formControlName="zipCode" required>
+                <mat-error *ngIf="checkoutForm.get('zipCode')?.hasError('required')">
+                  ZIP code is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Payment Information -->
+          <div class="form-section">
+            <h3>Payment Information</h3>
+            
+            <mat-form-field appearance="outline">
+              <mat-label>Card Number</mat-label>
+              <input matInput formControlName="cardNumber" placeholder="1234 5678 9012 3456" required>
+              <mat-error *ngIf="checkoutForm.get('cardNumber')?.hasError('required')">
+                Card number is required
+              </mat-error>
+              <mat-error *ngIf="checkoutForm.get('cardNumber')?.hasError('pattern')">
+                Please enter a valid 16-digit card number
+              </mat-error>
+            </mat-form-field>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Expiry Month</mat-label>
+                <input matInput formControlName="expiryMonth" placeholder="MM" required>
+                <mat-error *ngIf="checkoutForm.get('expiryMonth')?.hasError('required')">
+                  Expiry month is required
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('expiryMonth')?.hasError('pattern')">
+                  Please enter a valid month (01-12)
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>Expiry Year</mat-label>
+                <input matInput formControlName="expiryYear" placeholder="YYYY" required>
+                <mat-error *ngIf="checkoutForm.get('expiryYear')?.hasError('required')">
+                  Expiry year is required
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('expiryYear')?.hasError('pattern')">
+                  Please enter a valid year
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline">
+                <mat-label>CVV</mat-label>
+                <input matInput formControlName="cvv" placeholder="123" required>
+                <mat-error *ngIf="checkoutForm.get('cvv')?.hasError('required')">
+                  CVV is required
+                </mat-error>
+                <mat-error *ngIf="checkoutForm.get('cvv')?.hasError('pattern')">
+                  Please enter a valid CVV
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Payment Error -->
+          <div class="payment-error" *ngIf="paymentError">
+            <mat-icon>error</mat-icon>
+            <p>{{ paymentError }}</p>
+            <button mat-button color="warn" (click)="retryPayment()">
+              Try Again
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            [disabled]="checkoutForm.invalid || processingPayment"
+            class="submit-btn"
+          >
+            <mat-spinner *ngIf="processingPayment" diameter="20"></mat-spinner>
+            <span *ngIf="!processingPayment">Place Order - ${{ total.toFixed(2) }}</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> 

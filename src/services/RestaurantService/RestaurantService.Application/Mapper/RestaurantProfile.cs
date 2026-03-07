@@ -17,6 +17,8 @@ namespace RestaurantService.Application.Mapper
         {
             CreateMap<Restaurant, RestaurantDto>();
             CreateMap<Restaurant, RestaurantDetailsDto>();
+            CreateMap<RestaurentService.Domain.Entites.Category, RestaurantService.Application.Restaurents.Queries.CategoryDto>();
+            CreateMap<RestaurentService.Domain.Entites.MenuItem, RestaurantService.Application.Restaurents.Queries.MenuItemDto>();
             // Add other custom mappings if needed
         }
     }

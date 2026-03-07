@@ -13,6 +13,5 @@ namespace OrderService.Application.Orders.Commands
         OrderStatus NewStatus,
         string? Reason = null) : IRequest<bool>
     {
-        public object ChangedBy { get; internal set; }
     }
 }

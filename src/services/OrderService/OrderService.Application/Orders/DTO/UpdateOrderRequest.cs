@@ -1,18 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OrderService.Application.Orders.Commands;
+using System.Text.Json.Serialization;
 
 namespace OrderService.Application.Orders.DTO
 {
     public class UpdateOrderRequest
     {
-        public Guid OrderId { get; set; }  // Required for update
-        public Guid UserId { get; set; }    // For verification
-        public List<OrderItemDto> Items { get; set; }
+        [JsonPropertyName("orderId")]
+        public Guid OrderId { get; set; }
 
-        public string ETag { get; set; }
+        [JsonPropertyName("userId")]
+        public Guid UserId { get; set; }
+
+        [JsonPropertyName("items")]
+        public List<UpdateOrderItemRequest> Items { get; set; } = new();
+
+        [JsonPropertyName("notes")]
+        public string? Notes { get; set; }
+    }
+
+    public class UpdateOrderItemRequest
+    {
+        [JsonPropertyName("orderItemId")]
+        public Guid? OrderItemId { get; set; }
+
+        [JsonPropertyName("menuItemId")]
+        public Guid MenuItemId { get; set; }
+
+        [JsonPropertyName("itemName")]
+        public string ItemName { get; set; } = string.Empty;
+
+        [JsonPropertyName("quantity")]
+        public int Quantity { get; set; }
+
+        [JsonPropertyName("unitPrice")]
+        public decimal UnitPrice { get; set; }
     }
 }

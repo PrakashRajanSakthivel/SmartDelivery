@@ -37,6 +37,9 @@ namespace OrderService.Infra.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DeliveredAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("bit");
 
