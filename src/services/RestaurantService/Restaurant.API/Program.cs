@@ -11,38 +11,14 @@ using RestaurantService.Infra;
 using SharedSvc.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
-using Serilog.Events;
-using Serilog.Formatting.Elasticsearch;
-using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-
-var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddEnvironmentVariables()
-    .Build();
-
-var elasticUri = configuration["Elasticsearch:Uri"];
-
-Log.Logger = new LoggerConfiguration()
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri ?? "http://localhost:9200"))
-    {
-        AutoRegisterTemplate = true,
-        IndexFormat = "restaurantservice-logs-{0:yyyy.MM.dd}",
-        CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
-        EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
-                           EmitEventFailureHandling.RaiseCallback
-    })
-    .CreateLogger();
+builder.AddSerilogLogging("restaurantservice");
 
 try
 {
     Log.Information("Starting up the Restaurant Service");
-    builder.Host.UseSerilog();
 
     builder.Services
         .AddControllers();
@@ -56,7 +32,7 @@ try
         .AddCustomHealthChecks(new CustomHealthCheckOptions
         {
             ServiceName = "RestaurantService",
-            DatabaseConnectionString = builder.Configuration.GetConnectionString("DefaultConnection"),
+            DatabaseConnectionString = builder.Configuration.GetConnectionString("RestaurantDatabase"),
             ElasticsearchUri = builder.Configuration["Elasticsearch:Uri"],
             EnableDatabaseCheck = true,
             EnableElasticsearchCheck = true

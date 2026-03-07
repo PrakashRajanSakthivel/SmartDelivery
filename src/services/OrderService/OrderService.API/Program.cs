@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderService.Application.Mapper;
 using Serilog;
-using Serilog.Events;
-using Serilog.Formatting.Elasticsearch;
-using Serilog.Sinks.Elasticsearch;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
@@ -18,27 +15,7 @@ using OrderService.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
-    builder.Logging.ClearProviders();
-
-    var configuration = new ConfigurationBuilder()
-        .AddJsonFile("appsettings.json")
-        .AddEnvironmentVariables()
-        .Build();
-
-    var elasticUri = configuration["Elasticsearch:Uri"];
-
-    Log.Logger = new LoggerConfiguration()
-         .Enrich.FromLogContext()
-        .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(elasticUri))
-        {
-            AutoRegisterTemplate = true,
-            IndexFormat = "orderservice-logs-{0:yyyy.MM.dd}",
-            CustomFormatter = new ElasticsearchJsonFormatter(renderMessage: true),
-            EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
-                               EmitEventFailureHandling.RaiseCallback |
-                           EmitEventFailureHandling.ThrowException
-    })
-    .CreateLogger();
+builder.AddSerilogLogging("orderservice");
 
 try
 {
@@ -79,19 +56,6 @@ try
     builder.Services.AddAutoMapper(typeof(OrderProfile));
 
     var app = builder.Build();
-
-    app.UseSerilogRequestLogging(options =>
-    {
-        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
-        {
-            diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-            diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
-        };
-        options.GetLevel = (ctx, elapsed, ex) =>
-            ex != null ? LogEventLevel.Error :
-            ctx.Response.StatusCode > 499 ? LogEventLevel.Error :
-            LogEventLevel.Information;
-    });
 
     app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseDefaultLogging(builder.Configuration);
