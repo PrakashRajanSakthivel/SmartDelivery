@@ -1,34 +1,23 @@
 using RestaurantService.Application.Mapper;
 using RestaurantService.Infra.Data;
 using RestaurentService.Infra.Data;
-using Shared.Authentication;
-using Shared.CorrelationId;
-using Shared.DevTools;
 using Shared.Http;
-using Shared.Logging;
-using Shared.Swagger;
 using RestaurantService.Infra;
 using SharedSvc.HealthChecks;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
+using Shared.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddSerilogLogging("restaurantservice");
+builder.AddServiceDefaults("restaurantservice");
 
 try
 {
     Log.Information("Starting up the Restaurant Service");
 
     builder.Services
-        .AddControllers();
-
-    builder.Services
-        .AddEndpointsApiExplorer()
         .AddRestaurentServiceInfrastructure(builder.Configuration)
         .AddHttpClients(builder.Configuration)
-        .AddJwtAuth(builder.Configuration)
-        .AddSwaggerSupport()
         .AddCustomHealthChecks(new CustomHealthCheckOptions
         {
             ServiceName = "RestaurantService",
@@ -38,16 +27,6 @@ try
             EnableElasticsearchCheck = true
         });
 
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowFrontend", policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-        });
-    });
-
     builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
@@ -55,37 +34,16 @@ try
 
     var app = builder.Build();
 
-    app.UseMiddleware<CorrelationIdMiddleware>();
-    app.UseDefaultLogging(builder.Configuration);
-    app.UseJwtAuth();
-    app.UseCors("AllowFrontend");
-
     if (app.Environment.IsDevelopment())
     {
-        using (var scope = app.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-            var dbContext = services.GetRequiredService<RestaurantDbContext>();
-            SeedData.Initialize(dbContext);
-        }
-
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        app.MapDevTokenGenerator(builder.Configuration);
-        app.Use(async (context, next) =>
-        {
-            if (context.Request.Path == "/")
-            {
-                context.Response.Redirect("/swagger/index.html");
-                return;
-            }
-            await next();
-        });
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
+        SeedData.Initialize(dbContext);
     }
 
     app.UseCustomHealthChecks("RestaurantService");
-    app.UseHttpsRedirection();
-    app.MapControllers();
+    app.UseServiceDefaults(builder.Configuration);
+
     app.Run();
 }
 catch (Exception ex)
