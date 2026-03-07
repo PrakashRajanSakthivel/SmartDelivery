@@ -16,8 +16,7 @@ try
     Log.Information("Starting up the Order Service");
 
     builder.Services
-        .AddOrderServiceInfrastructure(builder.Configuration)
-        .AddHttpClients(builder.Configuration);
+        .AddOrderServiceInfrastructure(builder.Configuration);
 
     builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssembly(typeof(CreateOrderHandler).Assembly));
@@ -27,6 +26,7 @@ try
         client.BaseAddress = new Uri(builder.Configuration["RestaurantService:BaseUrl"]!);
     })
     .AddHttpMessageHandler<CorrelationIdDelegatingHandler>()
+    .AddHttpMessageHandler<IstioTracingHeadersPropagationHandler>()
     .AddPolicyHandler(HttpClientPolicies.GetRetryPolicy())
     .AddPolicyHandler(HttpClientPolicies.GetCircuitBreakerPolicy());
 

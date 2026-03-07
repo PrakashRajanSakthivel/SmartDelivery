@@ -1,21 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Polly;
+﻿using Polly;
 using Polly.Extensions.Http;
-using Shared.CorrelationId;
 
 namespace Shared.Http
 {
-    // shared/Http/HttpClientPolicies.cs
     public static class HttpClientPolicies
     {
-        public static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration config)
-        {
-            services.AddTransient<CorrelationIdDelegatingHandler>();
-
-            return services;
-        }
-
         public static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy() =>
             HttpPolicyExtensions
                 .HandleTransientHttpError()

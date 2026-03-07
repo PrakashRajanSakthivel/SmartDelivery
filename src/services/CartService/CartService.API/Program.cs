@@ -1,5 +1,4 @@
 using Serilog;
-using Shared.Http;
 using CartService.Infra;
 using Shared.ServiceDefaults;
 
@@ -12,8 +11,7 @@ try
     Log.Information("Starting up the Cart Service");
 
     builder.Services
-        .AddCartServiceInfrastructure(builder.Configuration)
-        .AddHttpClients(builder.Configuration);
+        .AddCartServiceInfrastructure(builder.Configuration);
 
     var app = builder.Build();
 

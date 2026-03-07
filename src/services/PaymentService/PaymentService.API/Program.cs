@@ -1,6 +1,5 @@
 using Serilog;
 using Shared.ServiceDefaults;
-using SharedSvc.Exception;
 using PaymentService.Application.common;
 using PaymentService.Application.Payment.CommandHandlers;
 
@@ -19,7 +18,6 @@ try
 
     var app = builder.Build();
 
-    app.UseMiddleware<ExceptionHandlingMiddleware>();
     app.UseServiceDefaults(builder.Configuration);
 
     app.Run();

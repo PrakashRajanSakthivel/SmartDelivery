@@ -1,7 +1,6 @@
 using RestaurantService.Application.Mapper;
 using RestaurantService.Infra.Data;
 using RestaurentService.Infra.Data;
-using Shared.Http;
 using RestaurantService.Infra;
 using SharedSvc.HealthChecks;
 using Serilog;
@@ -17,7 +16,6 @@ try
 
     builder.Services
         .AddRestaurentServiceInfrastructure(builder.Configuration)
-        .AddHttpClients(builder.Configuration)
         .AddCustomHealthChecks(new CustomHealthCheckOptions
         {
             ServiceName = "RestaurantService",

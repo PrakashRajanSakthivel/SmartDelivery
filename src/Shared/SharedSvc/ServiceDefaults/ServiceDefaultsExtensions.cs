@@ -4,8 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
+using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
+using SharedSvc.Exception;
 
 namespace Shared.ServiceDefaults
 {
@@ -44,6 +46,9 @@ namespace Shared.ServiceDefaults
 
             builder.AddSerilogLogging(serviceName);
 
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddTransient<CorrelationIdDelegatingHandler>();
+            builder.Services.AddTransient<IstioTracingHeadersPropagationHandler>();
             builder.Services.AddControllers();
             builder.Services
                 .AddEndpointsApiExplorer()
@@ -82,6 +87,7 @@ namespace Shared.ServiceDefaults
         {
             options ??= new ServiceDefaultsOptions();
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseCorrelationId();
             app.UseDefaultLogging(configuration);
 
