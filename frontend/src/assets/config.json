@@ -1,0 +1,10 @@
+{
+  "useMockData": false,
+  "apiUrls": {
+    "restaurant": "http://localhost:5002/api/restaurants",
+    "order": "http://localhost:5003/api/orders",
+    "payment": "http://localhost:5005/api/payments",
+    "cart": "http://localhost:5004/api/cart",
+    "auth": "http://localhost:5001/api/auth"
+  }
+}

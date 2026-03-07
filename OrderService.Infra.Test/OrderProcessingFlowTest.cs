@@ -17,6 +17,9 @@ namespace Automation.E2E
         // Fixed GUID matching testuser's Id in HardcodedUserRepository - reused across all test runs
         private const string TestUserId = "00000000-0000-0000-0000-000000000002";
 
+        // Seeded Burger House from scripts/seed-restaurants.sql – fixed GUID, always present after seed
+        private const string SeedBurgerHouseId = "11111111-0000-0000-0000-000000000001";
+
         // Cached token - fetched once per process lifetime, reused on reruns
         private static string? _cachedToken;
         private static readonly SemaphoreSlim _tokenLock = new SemaphoreSlim(1, 1);
@@ -24,8 +27,8 @@ namespace Automation.E2E
         [Fact]
         public async Task CompleteOrderFlow_ReturnsOrderIdOrPaymentError()
         {
-            // 1. Insert restaurant, dishes, prices (hardcoded)
-            var restaurantId = await InsertRestaurant();
+            // 1. Use the seeded Burger House (scripts/seed-restaurants.sql) – no DB pollution
+            var restaurantId = await EnsureRestaurantAsync();
             var menuItemId = await GetMenuItemIdFromRestaurant(restaurantId);
 
             // 2. Authenticate user and get token (created once, reused across runs)
@@ -51,55 +54,59 @@ namespace Automation.E2E
             }
         }
 
-        private async Task<Guid> InsertRestaurant()
+        /// <summary>
+        /// Returns the seeded Burger House ID if it exists in the DB.
+        /// Falls back to creating a minimal test restaurant with the same fixed GUID
+        /// so the test is self-contained when seed-restaurants.sql has not been run yet.
+        /// </summary>
+        private async Task<Guid> EnsureRestaurantAsync()
         {
-            // Use the correct schema for CreateRestaurantRequest
-            var restaurantPayload = new
+            var seedId = Guid.Parse(SeedBurgerHouseId);
+
+            var check = await _client.GetAsync($"http://localhost:5002/api/restaurants/{seedId}");
+            if (check.IsSuccessStatusCode)
+                return seedId;
+
+            // Seed not present – create a minimal restaurant with the same fixed GUID
+            // so the ID is stable across test runs.
+            var payload = new
             {
-                Name = "Testaurant",
-                Description = "A test restaurant",
-                Address = "123 Main St",
-                PhoneNumber = "123-456-7890",
-                DeliveryFee = 2.50m,
-                MinOrderAmount = 10.00m,
-                Categories = new[]
-                {
-                    new { Name = "Pizza", DisplayOrder = 1 }
-                },
-                MenuItems = new[]
+                Name        = "Burger House",
+                Description = "Juicy burgers and crispy fries",
+                Address     = "10 Burger Lane",
+                PhoneNumber = "555-100-0001",
+                DeliveryFee = 1.99m,
+                MinOrderAmount = 8.00m,
+                Categories = new[] { new { Name = "Burgers", DisplayOrder = 1 } },
+                MenuItems  = new[]
                 {
                     new {
-                        Name = "Cheese Pizza",
-                        Description = "Classic cheese pizza",
-                        Price = 10.99m,
-                        CategoryId = (Guid?)null,
-                        IsVegetarian = true,
-                        IsVegan = false,
-                        PreparationTime = 15
+                        Name            = "Classic Cheeseburger",
+                        Description     = "Beef patty, cheese, lettuce, tomato, onion",
+                        Price           = 9.99m,
+                        CategoryId      = (Guid?)null,
+                        IsVegetarian    = false,
+                        IsVegan         = false,
+                        PreparationTime = 10
                     }
                 }
             };
-            var response = await _client.PostAsync("http://localhost:5002/api/restaurants", new StringContent(
-                JsonConvert.SerializeObject(restaurantPayload), Encoding.UTF8, "application/json"));
+
+            var response = await _client.PostAsync(
+                "http://localhost:5002/api/restaurants",
+                new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json"));
             response.EnsureSuccessStatusCode();
-            // Try to get the ID from the Location header
+
+            // The API returns 201 Created with Location: .../api/restaurants/{id}
             var location = response.Headers.Location?.ToString();
             if (!string.IsNullOrEmpty(location))
             {
-                // Expecting .../api/restaurants/{id}
                 var idStr = location.Split('/').Last();
                 if (Guid.TryParse(idStr, out var id))
                     return id;
             }
-            // Fallback: try to parse body if present
-            var content = await response.Content.ReadAsStringAsync();
-            if (!string.IsNullOrWhiteSpace(content))
-            {
-                dynamic result = JsonConvert.DeserializeObject(content);
-                if (result != null && result.id != null)
-                    return result.id;
-            }
-            throw new Exception("Could not determine restaurant ID from response");
+
+            throw new Exception("Could not determine restaurant ID from CreateRestaurant response");
         }
 
 

@@ -26,7 +26,7 @@ namespace AuthService.Infra
             }
 
             var token = _authService.GenerateJwtToken(user);
-            var userDto = new UserDto { Username = user.Username, IsActive = user.IsActive };
+            var userDto = new UserDto { UserId = user.Id, Username = user.Username, IsActive = user.IsActive };
             return Task.FromResult(new AuthResponse { Success = true, Token = token, User = userDto, Message = "Login successful" });
         }
     }

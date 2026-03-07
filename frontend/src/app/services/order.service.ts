@@ -6,31 +6,32 @@ import { getApiUrl, shouldUseMockData } from '../config/api.config';
 
 export interface CreateOrderRequest {
   userId: string;
-  restaurantId: number;
-  orderItems: OrderItemDto[];
-  totalAmount: number;
+  restaurantId: string;
+  items: OrderItemRequest[];
+  notes?: string;
 }
 
-export interface OrderItemDto {
-  menuItemId: number;
+export interface OrderItemRequest {
+  menuItemId: string;
+  itemName: string;
   quantity: number;
   unitPrice: number;
 }
 
 export interface Order {
-  orderId: string;
+  id: string;
   userId: string;
-  restaurantId: number;
+  restaurantId: string;
   status: string;
   totalAmount: number;
   createdAt: string;
   updatedAt: string;
-  orderItems: OrderItem[];
+  items: OrderItem[];
 }
 
 export interface OrderItem {
-  id: number;
-  menuItemId: number;
+  id: string;
+  menuItemId: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;

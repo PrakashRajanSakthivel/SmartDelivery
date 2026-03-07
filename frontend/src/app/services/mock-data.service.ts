@@ -263,9 +263,8 @@ export class MockDataService {
     const success = Math.random() > 0.3; // 70% success rate
     
     const result: PaymentResult = {
-      success: success,
-      message: success ? 'Payment successful!' : 'Payment failed. Please try again.',
-      transactionId: success ? `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : undefined
+      succeeded: success,
+      error: success ? null : 'Payment failed. Please try again.'
     };
     
     return of(result).pipe(delay(1500)); // Simulate processing time
@@ -274,28 +273,28 @@ export class MockDataService {
   // Order methods
   createOrder(orderData: CreateOrderRequest): Observable<Order> {
     const order: Order = {
-      orderId: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       userId: orderData.userId,
       restaurantId: orderData.restaurantId,
       status: 'pending',
-      totalAmount: orderData.totalAmount,
+      totalAmount: orderData.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      orderItems: orderData.orderItems.map((item, index) => ({
-        id: index + 1,
+      items: orderData.items.map((item, index) => ({
+        id: `item_${index + 1}`,
         menuItemId: item.menuItemId,
         quantity: item.quantity,
         unitPrice: item.unitPrice,
         totalPrice: item.quantity * item.unitPrice
       }))
     };
-    
+
     this.mockOrders.push(order);
     return of(order).pipe(delay(1000));
   }
 
   getOrderById(orderId: string): Observable<Order> {
-    const order = this.mockOrders.find(o => o.orderId === orderId);
+    const order = this.mockOrders.find(o => o.id === orderId);
     if (order) {
       return of(order);
     }

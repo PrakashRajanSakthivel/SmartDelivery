@@ -12,8 +12,23 @@
     <div class="success-content">
       <mat-icon class="success-icon">check_circle</mat-icon>
       <h2>Order Placed Successfully!</h2>
-      <p>Thank you for your order. You will receive a confirmation email shortly.</p>
-      <button mat-raised-button color="primary" (click)="goToHome()">
+      <p class="order-id">Order ID: <strong>#{{ confirmedOrderId | slice:0:8 | uppercase }}</strong></p>
+      <p>Thank you for your order. We'll have it ready soon!</p>
+
+      <!-- Status Stepper -->
+      <div class="status-stepper">
+        <div class="status-step" *ngFor="let step of statusSteps; let i = index"
+             [class.active]="i === orderStatusIndex"
+             [class.done]="i < orderStatusIndex">
+          <div class="step-circle">
+            <mat-icon>{{ i < orderStatusIndex ? 'check' : step.icon }}</mat-icon>
+          </div>
+          <span class="step-label">{{ step.label }}</span>
+          <div class="step-line" *ngIf="i < statusSteps.length - 1"></div>
+        </div>
+      </div>
+
+      <button mat-raised-button color="primary" (click)="goToHome()" style="margin-top: 24px;">
         Continue Shopping
       </button>
     </div>

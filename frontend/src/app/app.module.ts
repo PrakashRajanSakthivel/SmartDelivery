@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 // Material Modules
@@ -23,9 +23,14 @@ import { RestaurantMenuComponent } from './components/restaurant-menu/restaurant
 import { CartComponent } from './components/cart/cart.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { TestComponent } from './components/test/test.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
 
 // Modules
 import { AppRoutingModule } from './app-routing.module';
+
+// Services
+import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -34,7 +39,9 @@ import { AppRoutingModule } from './app-routing.module';
     RestaurantMenuComponent,
     CartComponent,
     CheckoutComponent,
-    TestComponent
+    TestComponent,
+    LoginComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +60,13 @@ import { AppRoutingModule } from './app-routing.module';
     MatProgressSpinnerModule,
     MatBadgeModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { } 
+export class AppModule { }

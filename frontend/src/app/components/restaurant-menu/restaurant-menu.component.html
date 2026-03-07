@@ -1,4 +1,18 @@
 <div class="restaurant-menu-page">
+  <!-- Restaurant Conflict Dialog -->
+  <div class="conflict-overlay" *ngIf="pendingItem">
+    <mat-card class="conflict-card">
+      <mat-card-content>
+        <mat-icon class="conflict-icon">warning_amber</mat-icon>
+        <h3>Different Restaurant</h3>
+        <p>Your cart has items from another restaurant. Adding <strong>{{ pendingItem.name }}</strong> will clear your current cart.</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-stroked-button (click)="cancelConflict()">Keep Current Cart</button>
+        <button mat-raised-button color="warn" (click)="clearCartAndAdd()">Start New Order</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
   <!-- Header -->
   <div class="menu-header">
     <button mat-icon-button (click)="goBack()" class="back-button">
@@ -76,9 +90,10 @@
           <p class="item-description">{{ item.description }}</p>
           <div class="item-footer">
             <span class="item-price">${{ item.price.toFixed(2) }}</span>
-            <button 
-              mat-raised-button 
-              color="primary" 
+            <button
+              *ngIf="getItemQuantity(item.id) === 0"
+              mat-raised-button
+              color="primary"
               (click)="addToCart(item)"
               [disabled]="!item.isAvailable"
               class="add-to-cart-btn"
@@ -86,6 +101,15 @@
               <mat-icon>add</mat-icon>
               Add
             </button>
+            <div *ngIf="getItemQuantity(item.id) > 0" class="quantity-stepper">
+              <button type="button" class="stepper-btn" (click)="decrementItem(item)">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="quantity-display">{{ getItemQuantity(item.id) }}</span>
+              <button type="button" class="stepper-btn" (click)="incrementItem(item)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>

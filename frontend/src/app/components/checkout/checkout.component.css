@@ -53,12 +53,107 @@
 
 .success-content h2 {
   color: #333;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
-.success-content p {
+.order-id {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.success-content > p:not(.order-id) {
   color: #666;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+}
+
+/* Status Stepper */
+.status-stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin-top: 24px;
+  position: relative;
+}
+
+.status-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.step-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.4s ease;
+  z-index: 1;
+}
+
+.step-circle mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #999;
+  transition: color 0.4s ease;
+}
+
+.status-step.done .step-circle {
+  background: #4caf50;
+}
+
+.status-step.done .step-circle mat-icon {
+  color: white;
+}
+
+.status-step.active .step-circle {
+  background: #1976d2;
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2);
+  animation: pulse 1.2s infinite;
+}
+
+.status-step.active .step-circle mat-icon {
+  color: white;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.4); }
+  70%  { box-shadow: 0 0 0 8px rgba(25, 118, 210, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(25, 118, 210, 0); }
+}
+
+.step-label {
+  font-size: 0.7rem;
+  margin-top: 6px;
+  color: #999;
+  text-align: center;
+  max-width: 70px;
+}
+
+.status-step.done .step-label,
+.status-step.active .step-label {
+  color: #333;
+  font-weight: 500;
+}
+
+.step-line {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: #e0e0e0;
+  z-index: 0;
+}
+
+.status-step.done .step-line {
+  background: #4caf50;
 }
 
 .checkout-content {

@@ -41,9 +41,38 @@ namespace AuthService.API.Controllers
                 }
             });
         }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
+        {
+            _logger.LogInformation("Register attempt for user: {Username}", dto.Username);
+            var result = await _mediator.Send(new RegisterCommand(dto.Username, dto.Password));
+            if (!result.Success)
+            {
+                _logger.LogWarning("Register failed for user: {Username}", dto.Username);
+                return BadRequest(new { message = result.Message });
+            }
+            // RESTful: 201 Created with token and user info
+            return CreatedAtAction(nameof(Register), new
+            {
+                token = result.Token,
+                user = result.User,
+                message = result.Message,
+                _links = new
+                {
+                    self = Url.Action(nameof(Register), "Auth")
+                }
+            });
+        }
     }
 
     public class LoginRequestDto
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class RegisterRequestDto
     {
         public string Username { get; set; }
         public string Password { get; set; }

@@ -4,15 +4,17 @@ export interface ApiConfig {
     restaurant: string;
     order: string;
     payment: string;
+    auth: string;
   };
 }
 
 export const API_CONFIG: ApiConfig = {
-  useMockData: true, // Set to false to use real APIs
+  useMockData: false, // Set to true to use mock data
   apiUrls: {
-    restaurant: 'http://localhost:5001/api/restaurants',
-    order: 'http://localhost:5002/api/orders',
-    payment: 'http://localhost:5003/api/payments'
+    restaurant: 'http://localhost:5002/api/restaurants',
+    order: 'http://localhost:5003/api/orders',
+    payment: 'http://localhost:5005/api/payments',
+    auth: 'http://localhost:5001/api/auth'
   }
 };
 
@@ -24,4 +26,4 @@ export function getApiUrl(service: keyof ApiConfig['apiUrls']): string {
 // Helper function to check if mock data should be used
 export function shouldUseMockData(): boolean {
   return API_CONFIG.useMockData;
-} 
+}

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../models/cart-item.model';
 
@@ -13,7 +14,7 @@ export class CartComponent implements OnInit {
   deliveryFee = 2.99;
   total = 0;
 
-  constructor(private cartService: CartService) {}
+  constructor(private cartService: CartService, private router: Router) {}
 
   ngOnInit() {
     this.loadCart();
@@ -52,8 +53,7 @@ export class CartComponent implements OnInit {
   }
 
   proceedToCheckout() {
-    // Navigate to checkout page
-    console.log('Proceeding to checkout...');
+    this.router.navigate(['/checkout']);
   }
 
   getFoodIcon(itemName: string): string {

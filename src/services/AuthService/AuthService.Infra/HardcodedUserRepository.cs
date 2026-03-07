@@ -28,5 +28,11 @@ namespace AuthService.Infra
         {
             return _users.FirstOrDefault(u => u.Username == username);
         }
+
+        public void AddUser(User user)
+        {
+            user.Id = Guid.NewGuid();
+            _users.Add(user);
+        }
     }
 }

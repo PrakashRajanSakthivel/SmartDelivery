@@ -4,7 +4,7 @@ using Shared.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var defaults = new ServiceDefaultsOptions { UseJwt = false, UseCors = false, MapDevToken = false };
+var defaults = new ServiceDefaultsOptions { UseJwt = false, UseCors = true, MapDevToken = false };
 builder.AddServiceDefaults("authservice", defaults);
 
 try

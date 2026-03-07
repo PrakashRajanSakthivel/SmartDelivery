@@ -12,18 +12,8 @@ export interface PaymentIntent {
 }
 
 export interface PaymentResult {
-  success: boolean;
-  message: string;
-  transactionId?: string;
-}
-
-export interface PaymentRequest {
-  amount: number;
-  currency: string;
-  cardNumber: string;
-  expiryMonth: string;
-  expiryYear: string;
-  cvv: string;
+  succeeded: boolean;
+  error: string | null;
 }
 
 @Injectable({
@@ -56,12 +46,4 @@ export class PaymentService {
       paymentIntentId
     });
   }
-
-  processPayment(paymentRequest: PaymentRequest): Observable<PaymentResult> {
-    if (this.useMockData) {
-      // Simulate payment processing with mock data
-      return this.mockDataService.confirmPayment('mock_payment_intent');
-    }
-    return this.http.post<PaymentResult>(`${this.apiUrl}/process`, paymentRequest);
-  }
-} 
+}

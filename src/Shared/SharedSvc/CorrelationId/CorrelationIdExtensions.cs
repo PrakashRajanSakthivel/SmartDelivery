@@ -7,8 +7,9 @@ namespace Shared.CorrelationId
     {
         public static IServiceCollection AddCorrelationIdSupport(this IServiceCollection services)
         {
-            services.AddTransient<CorrelationIdMiddleware>();
-            services.AddTransient<CorrelationIdDelegatingHandler>();
+            // CorrelationIdDelegatingHandler is registered in AddServiceDefaults.
+            // CorrelationIdMiddleware must NOT be registered here — RequestDelegate is
+            // injected by UseMiddleware<T>() at pipeline time, not from the DI container.
             return services;
         }
 
