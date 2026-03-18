@@ -8,26 +8,26 @@ namespace AuthService.Infra
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
     {
-        private readonly IUserRepository _userRepo;
+        private readonly IAuthUnitOfWork _uow;
         private readonly IAuthService _authService;
 
-        public LoginCommandHandler(IUserRepository userRepo, IAuthService authService)
+        public LoginCommandHandler(IAuthUnitOfWork uow, IAuthService authService)
         {
-            _userRepo = userRepo;
+            _uow = uow;
             _authService = authService;
         }
 
-        public Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            var user = _userRepo.GetByUsername(request.Username);
+            var user = await _uow.Users.GetByUsernameAsync(request.Username);
             if (user == null || !_authService.VerifyPassword(request.Password, user.PasswordHash))
             {
-                return Task.FromResult(new AuthResponse { Success = false, Message = "Invalid credentials" });
+                return new AuthResponse { Success = false, Message = "Invalid credentials" };
             }
 
             var token = _authService.GenerateJwtToken(user);
             var userDto = new UserDto { UserId = user.Id, Username = user.Username, IsActive = user.IsActive };
-            return Task.FromResult(new AuthResponse { Success = true, Token = token, User = userDto, Message = "Login successful" });
+            return new AuthResponse { Success = true, Token = token, User = userDto, Message = "Login successful" };
         }
     }
 }

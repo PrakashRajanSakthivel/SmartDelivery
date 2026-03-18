@@ -85,6 +85,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService.Domain", "src\s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService.Infra", "src\services\AuthService\AuthService.Infra\AuthService.Infra.csproj", "{3E7AE6DE-6157-DC01-DFDA-3386C471EFBF}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "SmartDeliveryInfra", "..\..\..\..\OneDrive\Documents\GitHub\SmartDeliveryInfra\", "{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_56347"
+		Debug.AspNetCompiler.PhysicalPath = "..\..\..\..\OneDrive\Documents\GitHub\SmartDeliveryInfra\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56347\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_56347"
+		Release.AspNetCompiler.PhysicalPath = "..\..\..\..\OneDrive\Documents\GitHub\SmartDeliveryInfra\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56347\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "56347"
+		SlnRelativePath = "..\..\..\..\OneDrive\Documents\GitHub\SmartDeliveryInfra\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -359,6 +380,18 @@ Global
 		{3E7AE6DE-6157-DC01-DFDA-3386C471EFBF}.Release|x64.Build.0 = Release|Any CPU
 		{3E7AE6DE-6157-DC01-DFDA-3386C471EFBF}.Release|x86.ActiveCfg = Release|Any CPU
 		{3E7AE6DE-6157-DC01-DFDA-3386C471EFBF}.Release|x86.Build.0 = Release|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Debug|x64.Build.0 = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Debug|x86.Build.0 = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|x64.ActiveCfg = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|x64.Build.0 = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|x86.ActiveCfg = Debug|Any CPU
+		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

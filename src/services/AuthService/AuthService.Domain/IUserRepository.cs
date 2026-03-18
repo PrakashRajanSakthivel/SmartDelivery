@@ -2,7 +2,7 @@ namespace AuthService.Domain
 {
     public interface IUserRepository
     {
-        User? GetByUsername(string username);
-        void AddUser(User user);
+        Task<User?> GetByUsernameAsync(string username);
+        Task AddUserAsync(User user);
     }
 }
