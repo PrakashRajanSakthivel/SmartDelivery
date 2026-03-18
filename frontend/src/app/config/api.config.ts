@@ -1,3 +1,5 @@
+import { environment } from '../../environments/environment';
+
 export interface ApiConfig {
   useMockData: boolean;
   apiUrls: {
@@ -9,13 +11,8 @@ export interface ApiConfig {
 }
 
 export const API_CONFIG: ApiConfig = {
-  useMockData: false, // Set to true to use mock data
-  apiUrls: {
-    restaurant: 'http://localhost:5002/api/restaurants',
-    order: 'http://localhost:5003/api/orders',
-    payment: 'http://localhost:5005/api/payments',
-    auth: 'http://localhost:5001/api/auth'
-  }
+  useMockData: environment.useMockData,
+  apiUrls: environment.apiUrls
 };
 
 // Helper function to get API URL
