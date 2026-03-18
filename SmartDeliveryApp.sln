@@ -106,6 +106,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "SmartDeliveryInfra", "..\..
 		SlnRelativePath = "..\..\..\..\OneDrive\Documents\GitHub\SmartDeliveryInfra\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentService.Infra", "src\services\PaymentService\PaymentService.Infra\PaymentService.Infra.csproj", "{24565038-4212-4E9E-91BC-E50E44BA7C0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -392,6 +394,18 @@ Global
 		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|x64.Build.0 = Debug|Any CPU
 		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|x86.ActiveCfg = Debug|Any CPU
 		{E4569FD6-8CA1-101C-7ABB-DC2895DE9583}.Release|x86.Build.0 = Debug|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Debug|x64.Build.0 = Debug|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Debug|x86.Build.0 = Debug|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Release|x64.ActiveCfg = Release|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Release|x64.Build.0 = Release|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Release|x86.ActiveCfg = Release|Any CPU
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -428,6 +442,7 @@ Global
 		{38B66A6F-0090-D0AA-BFC4-2A5FD02B02D4} = {8849EC66-1433-A328-871A-10738133636F}
 		{244FB7BC-A187-91BD-20A6-B2C2B508F69F} = {8849EC66-1433-A328-871A-10738133636F}
 		{3E7AE6DE-6157-DC01-DFDA-3386C471EFBF} = {8849EC66-1433-A328-871A-10738133636F}
+		{24565038-4212-4E9E-91BC-E50E44BA7C0E} = {66256518-8007-405D-BBEB-F09F90F578C2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {05B03117-8F96-426D-BCF4-5219BD5922C5}

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PaymentService.Application.Contracts;
+﻿using PaymentService.Application.Contracts;
 
 namespace PaymentService.Application.common
 {
     public class MockPaymentService : IPaymentService
     {
-        private readonly Dictionary<string, PaymentIntent> _mockIntents = new();
-
         public Task<PaymentIntentResponse> CreatePaymentIntentAsync(decimal amount, string currency)
         {
             var intent = new PaymentIntent
@@ -22,8 +15,6 @@ namespace PaymentService.Application.common
                 Status = "requires_payment_method"
             };
 
-            _mockIntents[intent.Id] = intent;
-
             return Task.FromResult(new PaymentIntentResponse(
                 intent.Id,
                 intent.ClientSecret,
@@ -34,19 +25,15 @@ namespace PaymentService.Application.common
 
         public Task<PaymentResult> ConfirmPaymentAsync(string paymentIntentId)
         {
-            if (_mockIntents.TryGetValue(paymentIntentId, out var intent))
-            {
-                // Simulate 10% failure rate
-                bool success = Random.Shared.Next(0, 10) > 1;
+            if (string.IsNullOrEmpty(paymentIntentId) || !paymentIntentId.StartsWith("pi_mock_"))
+                return Task.FromResult(new PaymentResult(false, "Payment intent not found"));
 
-                intent.Status = success ? "succeeded" : "failed";
+            // Simulate 10% failure rate
+            bool success = Random.Shared.Next(0, 10) > 1;
 
-                return Task.FromResult(new PaymentResult(
-                    success,
-                    success ? null : "Mock payment declined"));
-            }
-
-            return Task.FromResult(new PaymentResult(false, "Payment intent not found"));
+            return Task.FromResult(new PaymentResult(
+                success,
+                success ? null : "Mock payment declined"));
         }
 
        

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PaymentService.Application.Contracts
+﻿namespace PaymentService.Application.Contracts
 {
-    internal class PaymentIntent
+    public class PaymentIntent
     {
         public string Id { get; set; }
         public string ClientSecret { get; set; }

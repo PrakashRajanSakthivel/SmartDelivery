@@ -1,7 +1,6 @@
+using PaymentService.Infra;
 using Serilog;
 using Shared.ServiceDefaults;
-using PaymentService.Application.common;
-using PaymentService.Application.Payment.CommandHandlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,10 +10,7 @@ try
 {
     Log.Information("Starting up the Payment Service");
 
-    builder.Services.AddSingleton<IPaymentService, MockPaymentService>();
-
-    builder.Services.AddMediatR(cfg =>
-        cfg.RegisterServicesFromAssembly(typeof(CreatePaymentIntentCommandHandler).Assembly));
+    builder.Services.AddPaymentServiceInfrastructure(builder.Configuration);
 
     var app = builder.Build();
 

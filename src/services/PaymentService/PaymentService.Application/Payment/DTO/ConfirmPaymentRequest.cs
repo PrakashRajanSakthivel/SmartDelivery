@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace PaymentService.Application.Payment.DTO
 {
-    public record ConfirmPaymentRequest(string PaymentIntentId);
+    public record ConfirmPaymentRequest([property: JsonPropertyName("paymentIntentId")] string PaymentIntentId);
 }
