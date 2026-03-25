@@ -1,6 +1,7 @@
 using AuthService.Infra;
 using Serilog;
 using Shared.ServiceDefaults;
+using SharedSvc.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +13,18 @@ try
     Log.Information("Starting up the Auth Service");
 
     builder.Services.AddAuthServiceInfrastructure(builder.Configuration);
+    builder.Services.AddCustomHealthChecks(new CustomHealthCheckOptions
+    {
+        ServiceName = "AuthService",
+        DatabaseConnectionString = builder.Configuration.GetConnectionString("AuthDatabase"),
+        ElasticsearchUri = builder.Configuration["Elasticsearch:Uri"],
+        EnableDatabaseCheck = true,
+        EnableElasticsearchCheck = true
+    });
 
     var app = builder.Build();
 
+    app.UseCustomHealthChecks("AuthService");
     app.UseServiceDefaults(builder.Configuration, defaults);
 
     app.Run();

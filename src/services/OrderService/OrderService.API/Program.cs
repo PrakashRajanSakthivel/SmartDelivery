@@ -6,6 +6,7 @@ using OrderService.Application.Common;
 using OrderService.Infra;
 using Shared.CorrelationId;
 using Shared.ServiceDefaults;
+using SharedSvc.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,14 @@ try
 
     builder.Services
         .AddOrderServiceInfrastructure(builder.Configuration);
+    builder.Services.AddCustomHealthChecks(new CustomHealthCheckOptions
+    {
+        ServiceName = "OrderService",
+        DatabaseConnectionString = builder.Configuration.GetConnectionString("OrderDatabase"),
+        ElasticsearchUri = builder.Configuration["Elasticsearch:Uri"],
+        EnableDatabaseCheck = true,
+        EnableElasticsearchCheck = true
+    });
 
     builder.Services.AddMediatR(cfg =>
         cfg.RegisterServicesFromAssembly(typeof(CreateOrderHandler).Assembly));
@@ -34,6 +43,7 @@ try
 
     var app = builder.Build();
 
+    app.UseCustomHealthChecks("OrderService");
     app.UseServiceDefaults(builder.Configuration);
 
     app.Run();

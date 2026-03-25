@@ -8,6 +8,7 @@ using Shared.Http;
 using Shared.Logging;
 using Shared.Swagger;
 using SharedSvc.Exception;
+using System.Threading.RateLimiting;
 
 namespace Shared.ServiceDefaults
 {
@@ -71,6 +72,21 @@ namespace Shared.ServiceDefaults
                 });
             }
 
+            builder.Services.AddRateLimiter(rateLimitOptions =>
+            {
+                rateLimitOptions.GlobalLimiter = PartitionedRateLimiter.Create<Microsoft.AspNetCore.Http.HttpContext, string>(context =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        factory: _ => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 100,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                            QueueLimit = 5
+                        }));
+                rateLimitOptions.RejectionStatusCode = 429;
+            });
+
             return builder;
         }
 
@@ -90,6 +106,7 @@ namespace Shared.ServiceDefaults
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseCorrelationId();
             app.UseDefaultLogging(configuration);
+            app.UseRateLimiter();
 
             if (options.UseJwt)
                 app.UseJwtAuth();

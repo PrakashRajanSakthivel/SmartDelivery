@@ -15,7 +15,7 @@
 
 ## 🏗️ Overview
 
-SmartDelivery is a production-grade food delivery platform built with **.NET 10**, following Clean Architecture and CQRS patterns. It consists of **5 independent microservices** running on a k3s Kubernetes cluster with full Istio service mesh, distributed tracing, and centralized observability.
+SmartDelivery is a food delivery platform built to demonstrate how **.NET 10 microservices run in production** — Clean Architecture, CQRS, Istio service mesh, distributed tracing, and full CI/CD on Kubernetes. It consists of **5 independent microservices** running on a k3s cluster.
 
 The platform demonstrates a real end-to-end delivery flow: user auth → browse restaurants → add to cart → place order → process payment — all visible across Jaeger traces, Kibana logs, and Kiali's live service graph simultaneously.
 
@@ -256,7 +256,8 @@ sequenceDiagram
 - ✅ Swagger / OpenAPI — available on each service
 - ✅ Polly resilience — 3× retry (exp. backoff) + circuit breaker (5 faults / 30 s)
 - ✅ Istio B3 header propagation — `IstioTracingHeadersPropagationHandler`
-- ✅ Health checks — `/healthz` (RestaurantService; others deferred)
+- ✅ Health checks — `/health`, `/health/ready`, `/health/live` on all 5 services
+- ✅ Rate limiting — fixed window, 100 req/min per IP via `AddRateLimiter` global limiter (all services)
 
 #### Architecture Patterns
 - ✅ Clean Architecture — Domain → Application → Infra → API (per service)
