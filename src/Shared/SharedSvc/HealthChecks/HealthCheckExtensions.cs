@@ -17,11 +17,14 @@ public static class CustomHealthCheckExtensions
         // Add database check if enabled and connection string provided
         if (options.EnableDatabaseCheck && !string.IsNullOrEmpty(options.DatabaseConnectionString))
         {
+            // Deliberately NOT tagged "ready": the readiness probe runs every 15s per pod, and a SQL
+            // check there stops the serverless database from ever auto-pausing, which burns the
+            // free-tier vCore allowance. Still exposed on /health for manual inspection.
             healthChecks.AddSqlServer(
                 connectionString: options.DatabaseConnectionString,
                 name: "database",
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { "db", "sql", "sqlserver", "ready" });
+                tags: new[] { "db", "sql", "sqlserver" });
         }
 
         // Add Elasticsearch check if enabled and URI provided
