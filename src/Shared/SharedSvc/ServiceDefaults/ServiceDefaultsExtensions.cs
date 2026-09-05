@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Shared.Authentication;
 using Shared.CorrelationId;
 using Shared.DevTools;
@@ -24,7 +25,8 @@ namespace Shared.ServiceDefaults
         /// <summary>Register and use the "AllowFrontend" CORS policy. Default: true.</summary>
         public bool UseCors { get; set; } = true;
 
-        /// <summary>Map the /dev/token endpoint. Default: true.</summary>
+        /// <summary>Map the /dev/token endpoint. Default: true, but it is only ever mapped
+        /// when the host environment is Development.</summary>
         public bool MapDevToken { get; set; } = true;
 
         /// <summary>Redirect bare "/" requests to /swagger/index.html. Default: true.</summary>
@@ -119,7 +121,10 @@ namespace Shared.ServiceDefaults
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            if (options.MapDevToken)
+            // /dev/token mints a signed JWT for an anonymous caller, so it is gated on the
+            // environment as well as the option — a service that forgets to opt out cannot
+            // expose it in Production.
+            if (options.MapDevToken && app.Environment.IsDevelopment())
                 app.MapDevTokenGenerator(configuration);
 
             if (options.RedirectRootToSwagger)
